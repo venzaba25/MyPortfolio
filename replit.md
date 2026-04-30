@@ -4,10 +4,22 @@ Personal portfolio website for Venz Aba, built with React + TypeScript + Vite.
 
 ## Project Structure
 - App lives in the `myportfolio-main/` subdirectory
-- `src/` — React app source (pages, components, data, lib)
+- `src/pages/Home.tsx` — single-page composition of all sections
+- `src/components/` — `Hero`, `About`, `Services`, `Projects`, `AIAutomation`, `Testimonials`, `Contact`, `Footer`, `Navbar`, `ChatBot`
+- `src/components/ui/` — primitives (badge, button, ContactModal, ScrollReveal, TypingText, ConstellationBackground, SplashCursor, etc.)
+- `src/data/projects.json` — project gallery data
 - `server/admin-api.js` — optional Express bridge server (port 5174) for admin dashboard, contact form, project edits, image uploads
 - `api/` — serverless function variants (Vercel)
 - `public/` — static assets
+
+## Site Sections (Home page)
+1. Hero — "I turn your ideas into real, scalable products" + multi-role typing badge + CTAs (Hire Me / View Work / Say hi) + stats
+2. About — pillar cards (Outcome-driven, Modern stack, AI-native, Founder-friendly)
+3. Services — 5 product-style service cards + discovery-call card
+4. Projects — selected work pulled from `projects.json` (with API fallback)
+5. AI &amp; Automation — featured chatbot card with mock chat + 6 use-case cards
+6. Testimonials — 6 trust-style testimonials (placeholder content)
+7. Contact — form + WhatsApp / Messenger / email quick-actions
 
 ## Tech Stack
 - React 19 + TypeScript

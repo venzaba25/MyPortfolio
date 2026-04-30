@@ -6,6 +6,8 @@ import {
   IconBrandGithub, 
   IconBrandLinkedin, 
   IconBrandFacebook, 
+  IconBrandWhatsapp,
+  IconBrandMessenger,
   IconMail, 
   IconUser, 
   IconMessage2, 
@@ -88,12 +90,16 @@ export default function Contact() {
         {/* Header */}
         <ScrollReveal direction="up">
           <div className="mb-20 text-center">
-            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 tracking-tight">
-              Get In <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Touch</span>
+            <p className="text-xs uppercase tracking-[0.3em] text-cyan-400/80 font-semibold mb-4">
+              Contact
+            </p>
+            <h2 className="text-5xl md:text-6xl font-extrabold text-white mb-6 tracking-tight">
+              Let's build your next{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">winning product.</span>
             </h2>
             <p className="text-neutral-400 text-lg max-w-2xl mx-auto leading-relaxed">
-              Have a project in mind or just want to chat? I'm always open to discussing new ideas, 
-              original projects or opportunities to be part of your visions.
+              Tell me what you're trying to build or fix. I'll reply within 24 hours
+              with honest feedback, a rough timeline, and the simplest path forward.
             </p>
           </div>
         </ScrollReveal>
@@ -121,6 +127,39 @@ export default function Contact() {
                     value="venzaba25@gmail.com"
                     href="mailto:venzaba25@gmail.com"
                   />
+                  <ContactMethod 
+                    icon={<IconBrandWhatsapp className="h-6 w-6" />}
+                    label="Chat on WhatsApp"
+                    value="+63 951 246 7291"
+                    href="https://wa.me/639512467291?text=Hi%20Venz%2C%20I%27d%20like%20to%20discuss%20a%20project."
+                  />
+                  <ContactMethod 
+                    icon={<IconBrandMessenger className="h-6 w-6" />}
+                    label="Message me on Messenger"
+                    value="m.me/venzaba"
+                    href="https://m.me/venzaba"
+                  />
+
+                  {/* Quick action buttons */}
+                  <div className="flex flex-wrap gap-3 pt-2">
+                    <a
+                      href="https://wa.me/639512467291?text=Hi%20Venz%2C%20I%27d%20like%20to%20discuss%20a%20project."
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-semibold hover:bg-emerald-500/20 hover:text-white transition-all"
+                    >
+                      <IconBrandWhatsapp className="h-4 w-4" /> WhatsApp Me
+                    </a>
+                    <a
+                      href="https://m.me/venzaba"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-300 text-sm font-semibold hover:bg-blue-500/20 hover:text-white transition-all"
+                    >
+                      <IconBrandMessenger className="h-4 w-4" /> Messenger
+                    </a>
+                  </div>
+
                   <div className="flex gap-4 pt-4">
                     <SocialCircle 
                       icon={<IconBrandGithub />} 

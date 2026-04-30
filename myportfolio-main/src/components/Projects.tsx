@@ -71,11 +71,17 @@ export default function Projects({ className }: ProjectsProps) {
       <div className="relative max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
         <ScrollReveal direction="up">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 uppercase">
-              Projects Created
+            <p className="text-xs uppercase tracking-[0.3em] text-cyan-400/80 font-semibold mb-4">
+              Selected Work
+            </p>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white">
+              Projects that{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-violet-400">
+                ship and convert
+              </span>
             </h2>
-            <p className="mt-4 text-base md:text-lg text-cyan-100/80 max-w-3xl mx-auto">
-              A curated collection of customized management systems, interactive dashboards, and full-stack applications designed to streamline business operations and enhance user experience.
+            <p className="mt-5 text-base md:text-lg text-neutral-400 max-w-2xl mx-auto">
+              Real client work — booking sites, dashboards, mobile apps and full-stack systems built to solve real business problems.
             </p>
           </div>
         </ScrollReveal>

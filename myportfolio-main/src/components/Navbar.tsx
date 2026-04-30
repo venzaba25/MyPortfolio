@@ -13,27 +13,21 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
-  const [activeSection, setActiveSection] = useState("about");
+  const [activeSection, setActiveSection] = useState("home");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    {
-      name: "About",
-      link: "#about",
-    },
-    {
-      name: "Projects",
-      link: "#projects",
-    },
-    {
-      name: "Contact",
-      link: "#contact",
-    },
+    { name: "About", link: "#about" },
+    { name: "Services", link: "#services" },
+    { name: "Projects", link: "#projects" },
+    { name: "AI", link: "#ai" },
+    { name: "Reviews", link: "#testimonials" },
+    { name: "Contact", link: "#contact" },
   ];
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["about", "projects", "contact"];
+      const sections = ["home", "about", "services", "projects", "ai", "testimonials", "contact"];
       const scrollPosition = window.scrollY + 100; // Offset for navbar height
 
       for (const section of sections) {

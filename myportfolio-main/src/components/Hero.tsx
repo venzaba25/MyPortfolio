@@ -6,6 +6,7 @@ import TypingText from "./ui/TypingText";
 import ContactModal from "./ui/ContactModal";
 import { useState } from "react";
 import Counter from "./ui/Counter";
+import { IconBolt, IconShieldCheck, IconClock } from "@tabler/icons-react";
 
 
 interface HeroProps {
@@ -16,26 +17,24 @@ interface HeroProps {
 
 export default function Hero({ 
   className,
-  name = "Venz Aba",
-  description = "Passionate about creating beautiful, functional, and user-centered digital experiences."
+  name = "Venz",
 }: HeroProps) {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   return (
     <div
-      id="about"
+      id="home"
       className={cn(
-        "relative flex min-h-screen h-auto lg:h-screen w-full items-center justify-center bg-transparent m-0 p-0 py-20 lg:py-0",
+        "relative flex min-h-screen w-full items-center justify-center bg-transparent m-0 p-0 py-24 lg:py-28",
         className
       )}
     >
       {/* Electric mesh glow */}
       <div className="pointer-events-none absolute inset-0 [background-image:radial-gradient(circle_at_10%_10%,rgba(87,78,225,0.1),transparent_30%), radial-gradient(circle_at_90%_20%,rgba(255,76,246,0.1),transparent_30%), radial-gradient(circle_at_40%_80%,rgba(35,229,181,0.12),transparent_40%)]" />
 
-      {/* Background gradients removed to show constellation background */}
       <div className="relative z-20 flex flex-col lg:flex-row items-center justify-center w-full max-w-7xl mx-auto px-4 lg:px-8 gap-8 lg:gap-16 pt-24 lg:pt-0">
         
-        {/* Profile Image - First on Mobile, Second on Desktop */}
+        {/* Profile Image */}
         <ScrollReveal direction="right" delay={0.2} className="flex-1 flex justify-center lg:justify-end items-end pb-8 lg:pb-16 lg:order-2">
             <div className="w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 rounded-full p-[5px] lg:p-[10px] glowing-orb-border profile-orb">
               <div className="moving-orb orb-1 orb-blue" />
@@ -51,80 +50,106 @@ export default function Hero({
             </div>
           </ScrollReveal>
 
-        {/* Text Content - Second on Mobile, First on Desktop */}
+        {/* Text Content */}
         <div className="flex-1 text-center lg:text-left space-y-6 lg:order-1">
-          {/* Greeting with name and role */}
+          {/* Availability pill */}
           <ScrollReveal direction="left" delay={0}>
-            <div className="space-y-4">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
-                <span className="block text-neutral-700 dark:text-neutral-300 mb-2">Hello I'm</span>
-                <span className="block bg-gradient-to-b from-neutral-200 to-neutral-500 bg-clip-text text-transparent mb-4 pb-2">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+              </span>
+              <span className="text-xs uppercase tracking-widest text-neutral-300 font-medium">
+                Available for new projects · 2026
+              </span>
+            </div>
+          </ScrollReveal>
+
+          {/* Headline */}
+          <ScrollReveal direction="left" delay={0.05}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-extrabold leading-[1.1] tracking-tight">
+              <span className="block text-white">I turn your ideas into</span>
+              <span className="block bg-gradient-to-r from-cyan-300 via-blue-400 to-violet-400 bg-clip-text text-transparent pb-1">
+                real, scalable products.
+              </span>
+            </h1>
+          </ScrollReveal>
+
+          {/* Role typing badge */}
+          <ScrollReveal direction="left" delay={0.1}>
+            <div className="flex items-center justify-center lg:justify-start gap-3">
+              <span className="text-neutral-400 text-base sm:text-lg">I'm {name} —</span>
+              <span className="relative inline-block p-[3px] rounded-full glowing-orb-border badge-orb">
+                <div className="moving-orb orb-1 orb-blue" />
+                <div className="moving-orb orb-2 orb-red" />
+                <div className="moving-orb orb-3 orb-yellow" />
+                <Badge variant="outline" className="text-sm sm:text-base px-4 py-2 font-semibold border-0 bg-black rounded-full text-white">
                   <TypingText 
-                    text={name} 
-                    typingSpeed={150} 
-                    deletingSpeed={80}
-                    pauseDuration={1500} 
+                    text={["Web Developer", "Software Developer", "AI & Automation Developer"]} 
+                    typingSpeed={90} 
+                    deletingSpeed={50}
+                    pauseDuration={1600} 
                     loop={true} 
                     showCursor={true}
                     cursorCharacter="_"
                     cursorClassName="text-cyan-400 font-bold"
                   />
-                </span>
-                <span className="flex items-center justify-center lg:justify-start text-neutral-700 dark:text-neutral-300 text-3xl sm:text-4xl lg:text-5xl xl:text-6xl gap-4">
-                  <span className="relative inline-block p-[3px] rounded-full glowing-orb-border badge-orb">
-                    <div className="moving-orb orb-1 orb-blue" />
-                    <div className="moving-orb orb-2 orb-red" />
-                    <div className="moving-orb orb-3 orb-yellow" />
-                    <Badge variant="outline" className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl px-6 py-3 font-semibold border-0 bg-white dark:bg-black rounded-full">
-                      Web Developer
-                    </Badge>
-                  </span>
-                </span>
-              </h1>
+                </Badge>
+              </span>
             </div>
           </ScrollReveal>
           
-          {/* Description */}
-          <ScrollReveal direction="left" delay={0.1}>
-            <div className="space-y-3">
-              <p className="text-lg sm:text-xl text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-2xl">
-                {description}
-              </p>
-            </div>
+          {/* Subheadline */}
+          <ScrollReveal direction="left" delay={0.15}>
+            <p className="text-base sm:text-lg text-neutral-400 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+              I help businesses ship fast, modern websites, web &amp; mobile apps, AI chatbots,
+              and automation systems that save time, reduce cost, and convert visitors into customers.
+            </p>
           </ScrollReveal>
-          
-          {/* Call-to-action buttons */}
+
+          {/* Trust strip */}
           <ScrollReveal direction="left" delay={0.2}>
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <a href="#projects" className="px-8 py-3 bg-white text-neutral-700 font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 border border-neutral-200 text-center">
-                View My Work
-              </a>
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-xs sm:text-sm text-neutral-400">
+              <span className="inline-flex items-center gap-1.5"><IconBolt className="h-4 w-4 text-cyan-400" /> Fast delivery</span>
+              <span className="inline-flex items-center gap-1.5"><IconShieldCheck className="h-4 w-4 text-emerald-400" /> Production-ready</span>
+              <span className="inline-flex items-center gap-1.5"><IconClock className="h-4 w-4 text-violet-400" /> Async-friendly</span>
+            </div>
+          </ScrollReveal>
+          
+          {/* CTAs */}
+          <ScrollReveal direction="left" delay={0.25}>
+            <div className="flex flex-col sm:flex-row gap-4 pt-2">
               <button 
                 onClick={() => setIsContactModalOpen(true)}
-                className="px-8 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] transform hover:scale-105 active:scale-95 transition-all duration-300 text-center border-none"
+                className="px-8 py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.7)] transform hover:scale-[1.03] active:scale-95 transition-all duration-300 text-center border-none"
               >
-                Get In Touch
+                Hire Me
               </button>
+              <a href="#projects" className="px-8 py-3.5 bg-white/5 hover:bg-white/10 text-white font-semibold rounded-xl border border-white/15 backdrop-blur-sm hover:border-white/30 transition-all duration-200 text-center">
+                View My Work
+              </a>
+              <a href="#contact" className="px-8 py-3.5 text-neutral-300 font-semibold rounded-xl hover:text-white transition-all duration-200 text-center underline-offset-4 hover:underline">
+                Or just say hi →
+              </a>
             </div>
           </ScrollReveal>
-          
-          {/* Social links or stats */}
 
+          {/* Stats */}
           <ScrollReveal direction="left" delay={0.3}>
-            <div className="flex justify-center lg:justify-start space-x-8 pt-2">
-              <div className="text-center group">
+            <div className="flex justify-center lg:justify-start space-x-8 pt-4 border-t border-white/5 mt-4">
+              <div className="text-center group pt-4">
                 <p className="text-3xl font-bold text-white group-hover:text-blue-400 transition-colors">
                   <Counter value={2} suffix="+" />
                 </p>
                 <p className="text-xs uppercase tracking-widest text-neutral-500 mt-1">Years Experience</p>
               </div>
-              <div className="text-center group">
+              <div className="text-center group pt-4">
                 <p className="text-3xl font-bold text-white group-hover:text-indigo-400 transition-colors">
                   <Counter value={10} suffix="+" />
                 </p>
-                <p className="text-xs uppercase tracking-widest text-neutral-500 mt-1">Projects Completed</p>
+                <p className="text-xs uppercase tracking-widest text-neutral-500 mt-1">Projects Shipped</p>
               </div>
-              <div className="text-center group">
+              <div className="text-center group pt-4">
                 <p className="text-3xl font-bold text-white group-hover:text-violet-400 transition-colors">
                   <Counter value={10} suffix="+" />
                 </p>
