@@ -298,7 +298,7 @@ export default function Contact() {
                         <div className="flex items-start gap-2">
                           <span>✗</span>
                           <div>
-                            <p>Failed to send message. Please try again or email me directly.</p>
+                            <p>Message sending failed. Please email me directly at: <a href="mailto:venzaba25@gmail.com" className="text-blue-400 hover:underline">venzaba25@gmail.com</a></p>
                             {errorDetail && (
                               <p className="mt-1 text-xs text-red-300/80 break-all">{errorDetail}</p>
                             )}
