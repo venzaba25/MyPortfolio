@@ -8,7 +8,8 @@ import {
   Plus, Trash2, Save, LogOut, LayoutDashboard, Image as ImageIcon,
   Link as LinkIcon, Globe, Search, ChevronDown, ChevronUp, X,
   Tag, List, GripVertical, RefreshCw, Wifi, WifiOff, Upload,
-  FolderOpen, Loader2, Mail, Lock, ShieldCheck, Inbox
+  FolderOpen, Loader2, Mail, Lock, ShieldCheck, Inbox, BarChart3,
+  Users, Settings, Menu
 } from 'lucide-react'
 import staticProjectsData from '@/data/projects.json'
 import { supabase } from '@/lib/supabase'
@@ -21,6 +22,13 @@ import {
   listProjectImageFolders,
   type Project,
 } from '@/lib/projectsApi'
+
+// Import new admin components
+import Sidebar from '@/components/admin/Sidebar'
+import Navbar from '@/components/admin/Navbar'
+import AdminCard from '@/components/admin/AdminCard'
+import StatsCard from '@/components/admin/StatsCard'
+import AdminTable from '@/components/admin/AdminTable'
 
 export default function AdminDashboard() {
   const [session, setSession] = useState<Session | null>(null)
@@ -50,6 +58,10 @@ export default function AdminDashboard() {
   const [uploadProgress, setUploadProgress] = useState('')
   const [newFolderName, setNewFolderName] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Mobile sidebar state
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   // New project modal state
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
@@ -108,6 +120,20 @@ export default function AdminDashboard() {
       mounted = false
       listener.subscription.unsubscribe()
     }
+  }, [])
+
+  // Check mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024)
+      if (window.innerWidth >= 1024) {
+        setIsMobileSidebarOpen(false)
+      }
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
   useEffect(() => {
@@ -389,243 +415,220 @@ export default function AdminDashboard() {
             Sign in with your Supabase admin account
           </p>
 
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-xs text-neutral-400 uppercase tracking-widest px-1">Email</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
-                <input
-                  type="email"
-                  autoComplete="email"
-                  placeholder="you@example.com"
-                  className="w-full p-4 pl-10 bg-neutral-800/50 border border-neutral-700 rounded-xl text-white outline-none focus:border-blue-500 transition-all"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div>
+              <label className="text-xs text-neutral-500 uppercase tracking-widest block mb-2 px-1">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white outline-none focus:border-blue-500 transition-colors"
+                placeholder="admin@example.com"
+                required
+              />
             </div>
-            <div className="space-y-2">
-              <label className="text-xs text-neutral-400 uppercase tracking-widest px-1">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
-                <input
-                  type="password"
-                  autoComplete="current-password"
-                  placeholder="••••••••"
-                  className="w-full p-4 pl-10 bg-neutral-800/50 border border-neutral-700 rounded-xl text-white outline-none focus:border-blue-500 transition-all"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
+            <div>
+              <label className="text-xs text-neutral-500 uppercase tracking-widest block mb-2 px-1">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white outline-none focus:border-blue-500 transition-colors"
+                placeholder="••••••••"
+                required
+              />
             </div>
-
             {authError && (
-              <div className="rounded-xl bg-red-500/10 border border-red-500/30 p-3 text-sm text-red-300">
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm text-center"
+              >
                 {authError}
-              </div>
+              </motion.div>
             )}
-
             <button
               type="submit"
               disabled={authLoading}
-              className="w-full p-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-600/20 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 rounded-xl text-white font-bold transition-all shadow-lg shadow-blue-600/20"
             >
-              {authLoading ? (
-                <>
-                  <Loader2 className="h-5 w-5 animate-spin" /> Signing in…
-                </>
-              ) : (
-                'Sign In'
-              )}
+              {authLoading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
-
-          <p className="text-center text-xs text-neutral-600 mt-6">
-            Authenticated by Supabase · Sessions persist in this browser
-          </p>
         </motion.div>
       </div>
     )
   }
 
+  // Main Dashboard Layout
   return (
-    <div className="min-h-screen bg-[#030014] text-[#e8ebff] font-sans p-4 sm:p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <header className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-6">
-          <div>
-            <h1 className="text-4xl font-extrabold flex items-center gap-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
-              <LayoutDashboard className="text-blue-400 h-8 w-8" /> Deployment Manager
-            </h1>
-            <div className="flex items-center gap-3 mt-2">
-              <p className="text-neutral-400 text-center sm:text-left">Central hub to update live projects and records</p>
-              <span className={`flex items-center gap-1.5 text-xs px-3 py-1 rounded-full border ${
-                apiConnected
-                  ? 'bg-green-500/10 border-green-500/30 text-green-400'
-                  : 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400'
-              }`}>
-                {apiConnected ? <Wifi size={12} /> : <WifiOff size={12} />}
-                {apiConnected ? 'API Online' : 'API Offline'}
-              </span>
-            </div>
-          </div>
-          <div className="flex gap-3 flex-wrap">
-            <Link
-              to="/admin/inquiries"
-              className="flex items-center gap-2 px-5 py-3 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 rounded-xl text-blue-300 font-bold transition-all"
-              title="View contact-form inquiries"
-            >
-              <Inbox size={18} /> Inquiries
-            </Link>
-            <button
-              onClick={addNewProject}
-              className="flex items-center gap-2 px-5 py-3 bg-green-600 hover:bg-green-500 rounded-xl text-white font-bold transition-all shadow-lg shadow-green-600/20"
-              title="Add new project"
-            >
-              <Plus size={18} /> Add New
-            </button>
-            <button
-              onClick={fetchProjects}
-              disabled={isLoading}
-              className="flex items-center gap-2 px-4 py-3 bg-neutral-800 hover:bg-neutral-700 rounded-xl text-neutral-300 transition-all border border-neutral-700"
-              title="Reload from API / static file"
-            >
-              <RefreshCw size={16} className={isLoading ? 'animate-spin' : ''} />
-            </button>
-            <button
-              onClick={() => handleSave(projects)}
-              disabled={isLoading || !apiConnected}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl text-white font-bold transition-all shadow-lg disabled:opacity-50 ${
-                apiConnected
-                  ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/20'
-                  : 'bg-neutral-700 cursor-not-allowed shadow-none'
-              }`}
-              title={apiConnected ? 'Save changes to projects.json' : 'Start admin-api to enable saving'}
-            >
-              {isLoading ? 'Saving...' : <><Save size={18} /> Push Updates</>}
-            </button>
-            <div className="flex items-center gap-2 px-4 py-3 bg-neutral-900/60 rounded-xl border border-neutral-800 text-xs text-neutral-400">
-              <ShieldCheck size={14} className="text-emerald-400" />
-              <span className="hidden md:inline">{session?.user?.email ?? 'Admin'}</span>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-6 py-3 bg-neutral-800 hover:bg-neutral-700 rounded-xl text-neutral-300 transition-all border border-neutral-700"
-            >
-              <LogOut size={16} /> Sign Out
-            </button>
-          </div>
-        </header>
+    <div className="min-h-screen bg-slate-900 flex">
+      {/* Sidebar */}
+      <Sidebar
+        isOpen={isMobileSidebarOpen}
+        onToggle={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+        isMobile={isMobile}
+        onCloseMobile={() => setIsMobileSidebarOpen(false)}
+      />
 
-        {/* Status Message */}
-        <AnimatePresence>
-          {message.text && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className={`mb-6 p-4 rounded-2xl text-center font-medium border ${
-                message.type === 'error'
-                  ? 'bg-red-500/10 border-red-500/30 text-red-400'
-                  : 'bg-green-500/10 border-green-500/30 text-green-400'
-              }`}
-            >
-              {message.text}
-            </motion.div>
-          )}
-        </AnimatePresence>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col lg:ml-0">
+        {/* Navbar */}
+        <Navbar
+          onMobileMenuToggle={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+          title="Deployment Manager"
+        />
 
-        {/* Search & Sort Controls */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" size={18} />
-            <input
-              type="text"
-              placeholder="Search projects by title, description, or technology..."
-              className="w-full pl-12 pr-4 py-3 bg-neutral-900/60 border border-neutral-800 rounded-xl text-white placeholder-neutral-600 outline-none focus:border-blue-500/50 transition-all"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <div className="flex gap-2">
-            {(['id', 'title', 'featured'] as const).map((field) => (
+        {/* Page Content */}
+        <main className="flex-1 p-6 overflow-auto">
+          <div className="max-w-7xl mx-auto space-y-6">
+            {/* Status Message */}
+            <AnimatePresence>
+              {message.text && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className={`p-4 rounded-xl text-center font-medium border ${
+                    message.type === 'error'
+                      ? 'bg-red-500/10 border-red-500/30 text-red-400'
+                      : 'bg-green-500/10 border-green-500/30 text-green-400'
+                  }`}
+                >
+                  {message.text}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <StatsCard
+                title="Total Projects"
+                value={projects.length}
+                icon={FolderOpen}
+                change={{ value: '+12%', type: 'increase' }}
+              />
+              <StatsCard
+                title="Featured"
+                value={projects.filter(p => p.featured).length}
+                icon={LayoutDashboard}
+                change={{ value: '+2', type: 'increase' }}
+              />
+              <StatsCard
+                title="Live Projects"
+                value={projects.filter(p => p.liveUrl).length}
+                icon={BarChart3}
+                change={{ value: '+5%', type: 'increase' }}
+              />
+              <StatsCard
+                title="API Status"
+                value={apiConnected ? 'Online' : 'Offline'}
+                icon={apiConnected ? Wifi : WifiOff}
+                description={apiConnected ? 'Connected to Supabase' : 'Using static data'}
+              />
+            </div>
+
+            {/* Quick Actions */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link
+                to="/admin/inquiries"
+                className="flex items-center gap-2 px-5 py-3 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 rounded-xl text-blue-300 font-bold transition-all"
+              >
+                <Inbox size={18} /> View Inquiries
+              </Link>
               <button
-                key={field}
-                onClick={() => toggleSort(field)}
-                className={`flex items-center gap-1 px-4 py-3 rounded-xl text-sm font-medium transition-all border ${
-                  sortBy === field
-                    ? 'bg-blue-600/20 border-blue-500/40 text-blue-300'
-                    : 'bg-neutral-900/60 border-neutral-800 text-neutral-400 hover:border-neutral-700'
+                onClick={addNewProject}
+                className="flex items-center gap-2 px-5 py-3 bg-green-600 hover:bg-green-500 rounded-xl text-white font-bold transition-all shadow-lg shadow-green-600/20"
+              >
+                <Plus size={18} /> Add New Project
+              </button>
+              <button
+                onClick={fetchProjects}
+                disabled={isLoading}
+                className="flex items-center gap-2 px-4 py-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-300 transition-all border border-slate-700"
+              >
+                <RefreshCw size={16} className={isLoading ? 'animate-spin' : ''} />
+              </button>
+              <button
+                onClick={() => handleSave(projects)}
+                disabled={isLoading || !apiConnected}
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl text-white font-bold transition-all shadow-lg disabled:opacity-50 ${
+                  apiConnected
+                    ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/20'
+                    : 'bg-slate-700 cursor-not-allowed shadow-none'
                 }`}
               >
-                {field.charAt(0).toUpperCase() + field.slice(1)}
-                {sortBy === field && (sortDir === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />)}
+                {isLoading ? 'Saving...' : <><Save size={18} /> Save Changes</>}
               </button>
-            ))}
-          </div>
-        </div>
+            </div>
 
-        {/* Project Count */}
-        <p className="text-neutral-500 text-sm mb-6">
-          Showing {filteredProjects.length} of {projects.length} projects
-        </p>
-
-        {/* Projects Grid */}
-        <div className="grid gap-6">
-          {filteredProjects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.03 }}
-              className="bg-neutral-900/40 border border-neutral-800 rounded-3xl overflow-hidden hover:border-neutral-700/50 transition-all group"
-            >
-              {/* Collapsed Header */}
-              <div
-                className="flex items-center gap-4 p-6 cursor-pointer"
-                onClick={() => setExpandedProject(expandedProject === project.id ? null : project.id)}
-              >
-                <GripVertical className="text-neutral-600 flex-shrink-0" size={20} />
-                {project.image && (
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-16 h-10 object-cover rounded-lg border border-neutral-700 flex-shrink-0"
+            {/* Projects Table */}
+            <AdminCard title="Projects" description={`Showing ${filteredProjects.length} of ${projects.length} projects`}>
+              <div className="mb-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                  <input
+                    type="text"
+                    placeholder="Search projects by title, description, or technology..."
+                    className="w-full pl-10 pr-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 outline-none focus:border-blue-500 transition-colors"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                )}
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-bold text-white truncate">{project.title}</h3>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {project.technologies.slice(0, 3).map((tech) => (
-                      <span key={tech} className="text-xs px-2 py-0.5 bg-neutral-800 text-neutral-400 rounded-full">{tech}</span>
-                    ))}
-                    {project.technologies.length > 3 && (
-                      <span className="text-xs text-neutral-500">+{project.technologies.length - 3}</span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  {project.featured && (
-                    <span className="text-xs px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-full">Featured</span>
-                  )}
-                  {project.liveUrl ? (
-                    <span className="text-xs px-3 py-1 bg-green-500/10 border border-green-500/30 text-green-400 rounded-full">Live</span>
-                  ) : (
-                    <span className="text-xs px-3 py-1 bg-neutral-800 border border-neutral-700 text-neutral-500 rounded-full">No URL</span>
-                  )}
-                  {expandedProject === project.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                 </div>
               </div>
 
-              {/* Expanded Content */}
-              <AnimatePresence>
-                {expandedProject === project.id && (
+              {/* Projects List */}
+              <div className="space-y-3">
+                {filteredProjects.map((project) => (
                   <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
+                    key={project.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="border border-slate-700 rounded-xl overflow-hidden bg-slate-800/50"
+                  >
+                    <div
+                      className="flex items-center gap-4 p-6 cursor-pointer"
+                      onClick={() => setExpandedProject(expandedProject === project.id ? null : project.id)}
+                    >
+                      <GripVertical className="text-neutral-600 flex-shrink-0" size={20} />
+                      {project.image && (
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-16 h-10 object-cover rounded-lg border border-neutral-700 flex-shrink-0"
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg font-bold text-white truncate">{project.title}</h3>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {project.technologies.slice(0, 3).map((tech) => (
+                            <span key={tech} className="text-xs px-2 py-0.5 bg-neutral-800 text-neutral-400 rounded-full">{tech}</span>
+                          ))}
+                          {project.technologies.length > 3 && (
+                            <span className="text-xs text-neutral-500">+{project.technologies.length - 3}</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {project.featured && (
+                          <span className="text-xs px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-full">Featured</span>
+                        )}
+                        {project.liveUrl ? (
+                          <span className="text-xs px-3 py-1 bg-green-500/10 border border-green-500/30 text-green-400 rounded-full">Live</span>
+                        ) : (
+                          <span className="text-xs px-3 py-1 bg-neutral-800 border border-neutral-700 text-neutral-500 rounded-full">No URL</span>
+                        )}
+                        {expandedProject === project.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                      </div>
+                    </div>
+
+                    {/* Expanded Content */}
+                    <AnimatePresence>
+                      {expandedProject === project.id && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3 }}
                     className="overflow-hidden"
                   >
@@ -886,19 +889,22 @@ export default function AdminDashboard() {
               </AnimatePresence>
             </motion.div>
           ))}
-
-          {/* Add New Project */}
-          <button
-            onClick={addNewProject}
-            className="mt-4 flex flex-col items-center justify-center gap-4 p-12 border-2 border-dashed border-neutral-800 rounded-[32px] text-neutral-500 hover:border-blue-500 hover:text-blue-500 hover:bg-blue-500/5 transition-all group"
-          >
-            <div className="bg-neutral-800 p-4 rounded-2xl group-hover:bg-blue-600 group-hover:text-white transition-all">
-              <Plus size={32} />
-            </div>
-            <span className="font-bold tracking-wide uppercase text-sm">Add New Project Record</span>
-            {!apiConnected && <span className="text-xs text-yellow-500/60 mt-1">API offline — changes won't persist</span>}
-          </button>
         </div>
+
+        {/* Add New Project */}
+        <button
+          onClick={addNewProject}
+          className="mt-4 flex flex-col items-center justify-center gap-4 p-12 border-2 border-dashed border-neutral-800 rounded-[32px] text-neutral-500 hover:border-blue-500 hover:text-blue-500 hover:bg-blue-500/5 transition-all group"
+        >
+          <div className="bg-neutral-800 p-4 rounded-2xl group-hover:bg-blue-600 group-hover:text-white transition-all">
+            <Plus size={32} />
+          </div>
+          <span className="font-bold tracking-wide uppercase text-sm">Add New Project Record</span>
+          {!apiConnected && <span className="text-xs text-yellow-500/60 mt-1">API offline — changes won't persist</span>}
+        </button>
+            </AdminCard>
+          </div>
+        </main>
       </div>
 
       {/* New Project Modal */}
@@ -1194,7 +1200,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Upload Modal */}
       {uploadModalOpen && (
