@@ -1,0 +1,15 @@
+
+> my-portfolio@0.0.0 dev
+> concurrently -k -n api,vite -c blue,green "node server/admin-api.js" "vite"
+
+[1G[0K[34m[api][39m Portfolio Admin API Bridge running at http://localhost:5174
+[34m[api][39m Backup directory: /home/runner/workspace/myportfolio-main/src/data/backups
+[32m[vite][39m [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[32m[vite][39m 
+[32m[vite][39m   [32m[1mVITE[22m v7.2.0[39m  [2mready in [0m[1m451[22m[2m[0m ms[22m
+[32m[vite][39m 
+[32m[vite][39m   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5000[22m/[39m
+[32m[vite][39m   [32m➜[39m  [1mNetwork[22m: [36mhttp://172.24.0.2:[1m5000[22m/[39m
+[32m[vite][39m Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+[32m[vite][39m   npx update-browserslist-db@latest
+[32m[vite][39m   Why you should do it regularly: https://github.com/browserslist/update-db#readme
