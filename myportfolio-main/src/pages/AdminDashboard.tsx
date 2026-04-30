@@ -7,9 +7,11 @@ import {
   Plus, Trash2, Save, LogOut, LayoutDashboard, Image as ImageIcon,
   Link as LinkIcon, Globe, Search, ChevronDown, ChevronUp, X,
   Tag, List, GripVertical, RefreshCw, Wifi, WifiOff, Upload,
-  FolderOpen, Loader2
+  FolderOpen, Loader2, Mail, Lock, ShieldCheck
 } from 'lucide-react'
 import staticProjectsData from '@/data/projects.json'
+import { supabase } from '@/lib/supabase'
+import type { Session } from '@supabase/supabase-js'
 
 interface Project {
   id: number
@@ -27,8 +29,13 @@ interface Project {
 const API_URL = '/api/projects'
 
 export default function AdminDashboard() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [session, setSession] = useState<Session | null>(null)
+  const [authChecking, setAuthChecking] = useState(true)
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [authError, setAuthError] = useState<string | null>(null)
+  const [authLoading, setAuthLoading] = useState(false)
+  const isAuthenticated = !!session
   const [projects, setProjects] = useState<Project[]>(staticProjectsData.projects)
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState({ text: '', type: '' })
@@ -90,10 +97,23 @@ export default function AdminDashboard() {
     }
   }, [])
 
+  // Initialize Supabase session and listen for auth changes
   useEffect(() => {
-    const savedAuth = localStorage.getItem('isPortfolioAdmin')
-    if (savedAuth === 'true') {
-      setIsAuthenticated(true)
+    let mounted = true
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return
+      setSession(data.session ?? null)
+      setAuthChecking(false)
+    })
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession)
+    })
+
+    return () => {
+      mounted = false
+      listener.subscription.unsubscribe()
     }
   }, [])
 
@@ -104,19 +124,31 @@ export default function AdminDashboard() {
     }
   }, [isAuthenticated, fetchProjects, fetchFolders])
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (password === 'admin123') {
-      setIsAuthenticated(true)
-      localStorage.setItem('isPortfolioAdmin', 'true')
-    } else {
-      alert('Invalid password. Hint: admin123')
+    setAuthError(null)
+    setAuthLoading(true)
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      })
+      if (error) {
+        setAuthError(error.message)
+      } else {
+        setPassword('')
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Sign-in failed. Please try again.'
+      setAuthError(msg)
+    } finally {
+      setAuthLoading(false)
     }
   }
 
-  const handleLogout = () => {
-    setIsAuthenticated(false)
-    localStorage.removeItem('isPortfolioAdmin')
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    setSession(null)
   }
 
   const showMessage = (text: string, type: 'success' | 'error' = 'success') => {
@@ -340,33 +372,89 @@ export default function AdminDashboard() {
     setNewProjectData(prev => ({ ...prev, images: (prev.images || []).filter(img => img !== url) }))
   }
 
+  if (authChecking) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#030014] text-neutral-300">
+        <Loader2 className="h-6 w-6 animate-spin mr-3" />
+        <span className="text-sm">Checking session…</span>
+      </div>
+    )
+  }
+
   if (!isAuthenticated) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#030014] p-4 font-sans">
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="p-8 bg-neutral-900 border border-neutral-800 rounded-3xl w-full max-w-md shadow-2xl relative overflow-hidden"
         >
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500" />
-          <h2 className="text-3xl font-bold text-white mb-2 text-center">Admin Terminal</h2>
-          <p className="text-neutral-500 text-center mb-8 text-sm">Secure access to portfolio data system</p>
+
+          <div className="flex items-center justify-center h-12 w-12 rounded-2xl bg-blue-500/10 border border-blue-500/30 mx-auto mb-4">
+            <ShieldCheck className="h-6 w-6 text-blue-400" />
+          </div>
+          <h2 className="text-3xl font-bold text-white mb-2 text-center">Admin Login</h2>
+          <p className="text-neutral-500 text-center mb-8 text-sm">
+            Sign in with your Supabase admin account
+          </p>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-xs text-neutral-400 uppercase tracking-widest px-1">Access Key</label>
-              <input
-                type="password"
-                placeholder="Required"
-                className="w-full p-4 bg-neutral-800/50 border border-neutral-700 rounded-xl text-white outline-none focus:border-blue-500 transition-all font-mono"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <label className="text-xs text-neutral-400 uppercase tracking-widest px-1">Email</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
+                <input
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  className="w-full p-4 pl-10 bg-neutral-800/50 border border-neutral-700 rounded-xl text-white outline-none focus:border-blue-500 transition-all"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
             </div>
-            <button className="w-full p-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-600/20 active:scale-95">
-              Authenticate
+            <div className="space-y-2">
+              <label className="text-xs text-neutral-400 uppercase tracking-widest px-1">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
+                <input
+                  type="password"
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                  className="w-full p-4 pl-10 bg-neutral-800/50 border border-neutral-700 rounded-xl text-white outline-none focus:border-blue-500 transition-all"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            {authError && (
+              <div className="rounded-xl bg-red-500/10 border border-red-500/30 p-3 text-sm text-red-300">
+                {authError}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={authLoading}
+              className="w-full p-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-600/20 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {authLoading ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" /> Signing in…
+                </>
+              ) : (
+                'Sign In'
+              )}
             </button>
           </form>
+
+          <p className="text-center text-xs text-neutral-600 mt-6">
+            Authenticated by Supabase · Sessions persist in this browser
+          </p>
         </motion.div>
       </div>
     )
@@ -421,11 +509,15 @@ export default function AdminDashboard() {
             >
               {isLoading ? 'Saving...' : <><Save size={18} /> Push Updates</>}
             </button>
+            <div className="flex items-center gap-2 px-4 py-3 bg-neutral-900/60 rounded-xl border border-neutral-800 text-xs text-neutral-400">
+              <ShieldCheck size={14} className="text-emerald-400" />
+              <span className="hidden md:inline">{session?.user?.email ?? 'Admin'}</span>
+            </div>
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 px-6 py-3 bg-neutral-800 hover:bg-neutral-700 rounded-xl text-neutral-300 transition-all border border-neutral-700"
             >
-              <LogOut size={16} /> Exit
+              <LogOut size={16} /> Sign Out
             </button>
           </div>
         </header>

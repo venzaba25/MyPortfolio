@@ -136,8 +136,8 @@ export default function Contact() {
                   <ContactMethod 
                     icon={<IconBrandMessenger className="h-6 w-6" />}
                     label="Message me on Messenger"
-                    value="m.me/venzaba"
-                    href="https://m.me/venzaba"
+                    value="facebook.com/venzaba25"
+                    href="https://facebook.com/venzaba25"
                   />
 
                   {/* Quick action buttons */}
@@ -151,7 +151,7 @@ export default function Contact() {
                       <IconBrandWhatsapp className="h-4 w-4" /> WhatsApp Me
                     </a>
                     <a
-                      href="https://m.me/venzaba"
+                      href="https://facebook.com/venzaba25"
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-300 text-sm font-semibold hover:bg-blue-500/20 hover:text-white transition-all"

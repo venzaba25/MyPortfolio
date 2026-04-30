@@ -27,7 +27,14 @@ Personal portfolio website for Venz Aba, built with React + TypeScript + Vite.
 - Tailwind CSS
 - React Router
 - Framer Motion / GSAP
+- Supabase (admin authentication on `/admin`)
 - Express + Nodemailer + Multer (admin bridge server, optional)
+
+## Admin Login (`/admin`)
+- The `/admin` route is gated by Supabase email/password authentication.
+- Supabase client lives in `src/lib/supabase.ts` and reads `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` from `myportfolio-main/.env`.
+- Sessions persist in `localStorage` and auto-refresh.
+- To create or manage admin users, use the Supabase dashboard (Authentication → Users) for the connected project.
 
 ## Replit Setup
 - Workflow `Start application` runs `cd myportfolio-main && npm run dev`
