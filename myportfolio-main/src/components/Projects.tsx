@@ -5,44 +5,24 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ImageGalleryModal from "./ImageGalleryModal";
 import { ScrollReveal } from "./ui/ScrollReveal";
-
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  images?: string[];
-  technologies: string[];
-  features: string[];
-  liveUrl?: string;
-  githubUrl?: string;
-  featured?: boolean;
-}
+import { fetchProjects, type Project } from "@/lib/projectsApi";
 
 interface ProjectsProps {
   className?: string;
 }
 
-const API_URL = '/api/projects';
-
 export default function Projects({ className }: ProjectsProps) {
-  const [projects, setProjects] = useState<Project[]>(staticProjectsData.projects);
+  const [projects, setProjects] = useState<Project[]>(staticProjectsData.projects as Project[]);
   const [visibleCount, setVisibleCount] = useState(3);
   const [selectedProject, setSelectedProject] = useState<{ images: string[]; title: string; currentIndex: number } | null>(null);
 
   useEffect(() => {
-    fetch(API_URL)
-      .then(res => {
-        if (!res.ok) throw new Error('API unavailable');
-        return res.json();
+    fetchProjects()
+      .then((rows) => {
+        if (rows.length > 0) setProjects(rows);
       })
-      .then(data => {
-        if (data.projects && Array.isArray(data.projects)) {
-          setProjects(data.projects);
-        }
-      })
-      .catch(() => {
-        // Fallback to static import already set in initial state
+      .catch((err) => {
+        console.warn("[Projects] Supabase fetch failed, using static data:", err.message);
       });
   }, []);
 

@@ -38,3 +38,9 @@ externalPort = 80
 deploymentTarget = "static"
 build = ["sh", "-c", "cd myportfolio-main && npm run build"]
 publicDir = "myportfolio-main/dist"
+
+[userenv]
+
+[userenv.shared]
+SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdqenlianRtbndjaWRwdmZ3cmJjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NzUyNTExMiwiZXhwIjoyMDkzMTAxMTEyfQ.ulAx8bZ9-nr68p_kTPAlb2MRa0dy0sK2WXrf_InVvNg"
+SUPABASE_URL = "https://gjzybjtmnwcidpvfwrbc.supabase.co"

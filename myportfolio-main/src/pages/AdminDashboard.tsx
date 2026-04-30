@@ -12,21 +12,12 @@ import {
 import staticProjectsData from '@/data/projects.json'
 import { supabase } from '@/lib/supabase'
 import type { Session } from '@supabase/supabase-js'
-
-interface Project {
-  id: number
-  title: string
-  description: string
-  image: string
-  images?: string[]
-  technologies: string[]
-  features: string[]
-  liveUrl?: string
-  githubUrl?: string
-  featured?: boolean
-}
-
-const API_URL = '/api/projects'
+import {
+  fetchProjects as fetchProjectsFromDb,
+  replaceAllProjects,
+  deleteProject as deleteProjectFromDb,
+  type Project,
+} from '@/lib/projectsApi'
 
 export default function AdminDashboard() {
   const [session, setSession] = useState<Session | null>(null)
@@ -76,15 +67,14 @@ export default function AdminDashboard() {
 
   const fetchProjects = useCallback(async () => {
     try {
-      const res = await axios.get(API_URL, { timeout: 3000 })
-      if (res.data.projects && Array.isArray(res.data.projects)) {
-        setProjects(res.data.projects)
-        setApiConnected(true)
-      }
-    } catch {
+      const rows = await fetchProjectsFromDb()
+      setProjects(rows.length > 0 ? rows : staticProjectsData.projects)
+      setApiConnected(true)
+    } catch (err) {
       setApiConnected(false)
       setProjects(staticProjectsData.projects)
-      showMessage('API offline — loaded from static file. Start admin-api to enable live sync.', 'error')
+      const msg = err instanceof Error ? err.message : 'Unknown error'
+      showMessage(`Supabase offline — loaded from static file. (${msg})`, 'error')
     }
   }, [])
 
@@ -159,21 +149,27 @@ export default function AdminDashboard() {
   const handleSave = useCallback(async (updatedProjects: Project[]) => {
     setIsLoading(true)
     try {
-      await axios.post(API_URL, { projects: updatedProjects })
+      await replaceAllProjects(updatedProjects)
       setProjects(updatedProjects)
-      showMessage('Data synchronized with projects.json successfully!')
+      showMessage('Saved to Supabase successfully!')
     } catch (err) {
       console.error(err)
-      showMessage('Failed to save data. Check if the server is running.', 'error')
+      const msg = err instanceof Error ? err.message : 'Save failed'
+      showMessage(`Failed to save: ${msg}`, 'error')
     } finally {
       setIsLoading(false)
     }
   }, [])
 
-  const deleteProject = (id: number) => {
-    if (window.confirm('Delete this project? This will permanently remove it from projects.json')) {
-      const updated = projects.filter(p => p.id !== id)
-      handleSave(updated)
+  const deleteProject = async (id: number) => {
+    if (!window.confirm('Delete this project? This will permanently remove it from Supabase.')) return
+    try {
+      await deleteProjectFromDb(id)
+      setProjects(prev => prev.filter(p => p.id !== id))
+      showMessage('Project deleted.')
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Delete failed'
+      showMessage(`Failed to delete: ${msg}`, 'error')
     }
   }
 
