@@ -1,0 +1,171 @@
+import { cn } from "@/lib/utils";
+import { Badge } from "./ui/badge";
+import staticProjectsData from "@/data/projects.json";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import ImageGalleryModal from "./ImageGalleryModal";
+import { ScrollReveal } from "./ui/ScrollReveal";
+
+interface Project {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  images?: string[];
+  technologies: string[];
+  features: string[];
+  liveUrl?: string;
+  githubUrl?: string;
+  featured?: boolean;
+}
+
+interface ProjectsProps {
+  className?: string;
+}
+
+const API_URL = '/api/projects';
+
+export default function Projects({ className }: ProjectsProps) {
+  const [projects, setProjects] = useState<Project[]>(staticProjectsData.projects);
+  const [visibleCount, setVisibleCount] = useState(3);
+  const [selectedProject, setSelectedProject] = useState<{ images: string[]; title: string; currentIndex: number } | null>(null);
+
+  useEffect(() => {
+    fetch(API_URL)
+      .then(res => {
+        if (!res.ok) throw new Error('API unavailable');
+        return res.json();
+      })
+      .then(data => {
+        if (data.projects && Array.isArray(data.projects)) {
+          setProjects(data.projects);
+        }
+      })
+      .catch(() => {
+        // Fallback to static import already set in initial state
+      });
+  }, []);
+
+  const visibleProjects = projects.slice(0, visibleCount);
+  const hasMoreProjects = visibleCount < projects.length;
+
+  const loadMore = () => {
+    setVisibleCount(prev => Math.min(prev + 3, projects.length));
+  };
+
+  const openImageModal = (project: Project) => {
+    const allImages = [project.image, ...(project.images || [])].filter(Boolean);
+    setSelectedProject({
+      images: allImages,
+      title: project.title,
+      currentIndex: 0
+    });
+  };
+
+  const closeImageModal = () => {
+    setSelectedProject(null);
+  };
+
+  return (
+    <section id="projects" className={cn("relative py-24 overflow-hidden", className)}>
+      <div className="relative max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+        <ScrollReveal direction="up">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 uppercase">
+              Projects Created
+            </h2>
+            <p className="mt-4 text-base md:text-lg text-cyan-100/80 max-w-3xl mx-auto">
+              A curated collection of customized management systems, interactive dashboards, and full-stack applications designed to streamline business operations and enhance user experience.
+            </p>
+          </div>
+        </ScrollReveal>
+
+        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+          {visibleProjects.map((project, index) => (
+            <motion.article
+              key={project.id}
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: index * 0.1, duration: 0.45, ease: "easeOut" }}
+              whileHover={{ y: -6, scale: 1.01 }}
+              className="relative overflow-hidden rounded-3xl border-2 border-cyan-500/30 bg-slate-900/25 backdrop-blur-lg p-5 shadow-2xl shadow-black/40"
+            >
+              <div
+                className="relative aspect-video rounded-2xl overflow-hidden mb-4 cursor-pointer bg-neutral-900/40 flex items-center justify-center border border-white/5"
+                onClick={() => project.image && openImageModal(project)}
+              >
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-full object-cover object-top transition duration-500 transform hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
+              </div>
+
+              <h3 className="text-xl font-bold text-white mb-2">{project.title}</h3>
+              <p className="text-neutral-300 text-sm leading-relaxed mb-4">{project.description}</p>
+
+              <div className="flex flex-wrap gap-2 mb-4">
+                {project.technologies.map((tech) => (
+                  <Badge key={tech} variant="outline" className="text-xs px-2 py-1 rounded-full border-cyan-300/40 text-cyan-100">{tech}</Badge>
+                ))}
+              </div>
+
+              <div className="space-y-1 mb-4">
+                {(project.features || []).slice(0, 4).map((feature) => (
+                  <p key={feature} className="text-xs text-gray-300/90">• {feature}</p>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs font-semibold rounded-full hover:shadow-lg hover:scale-105 transition-all duration-200"
+                  >
+                    Live
+                  </a>
+                )}
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 border border-cyan-500 text-cyan-200 text-xs rounded-full hover:bg-cyan-500/20 hover:text-white transition-all duration-200"
+                  >
+                    Code
+                  </a>
+                )}
+              </div>
+            </motion.article>
+          ))}
+        </div>
+
+        {hasMoreProjects && (
+          <div className="flex justify-center mt-10">
+            <button
+              onClick={loadMore}
+              className="inline-flex items-center gap-2 px-8 py-3 border border-cyan-400/35 text-cyan-200 bg-black/30 rounded-full hover:bg-cyan-500/20 hover:text-white transition-all duration-200"
+            >
+              Load More
+            </button>
+          </div>
+        )}
+
+        <div className="text-center mt-8 text-xs text-cyan-100/70">
+          Showing {visibleCount} of {projects.length} projects
+        </div>
+      </div>
+
+      <ImageGalleryModal
+        isOpen={selectedProject !== null}
+        images={selectedProject?.images || []}
+        title={selectedProject?.title || ""}
+        currentIndex={selectedProject?.currentIndex || 0}
+        onClose={closeImageModal}
+      />
+    </section>
+  );
+}
