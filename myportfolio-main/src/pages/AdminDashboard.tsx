@@ -16,6 +16,8 @@ import {
   fetchProjects as fetchProjectsFromDb,
   replaceAllProjects,
   deleteProject as deleteProjectFromDb,
+  uploadProjectImage,
+  listProjectImageFolders,
   type Project,
 } from '@/lib/projectsApi'
 
@@ -80,8 +82,8 @@ export default function AdminDashboard() {
 
   const fetchFolders = useCallback(async () => {
     try {
-      const res = await axios.get('/api/folders', { timeout: 3000 })
-      setAvailableFolders(res.data.folders || [])
+      const folders = await listProjectImageFolders()
+      setAvailableFolders(folders)
     } catch {
       // Silently fail - folders just won't show
     }
@@ -233,18 +235,8 @@ export default function AdminDashboard() {
       const uploadedUrls: string[] = []
 
       for (const file of Array.from(files)) {
-        const formData = new FormData()
-        formData.append('folder', folder)
-        formData.append('image', file)
-
-        const res = await axios.post('http://localhost:5174/api/upload', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-          timeout: 30000
-        })
-
-        if (res.data.url) {
-          uploadedUrls.push(res.data.url)
-        }
+        const url = await uploadProjectImage(file, folder)
+        uploadedUrls.push(url)
       }
 
       if (uploadedUrls.length > 0) {
@@ -263,7 +255,8 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       console.error(err)
-      showMessage('Upload failed. Make sure admin-api is running.', 'error')
+      const msg = err instanceof Error ? err.message : 'Unknown error'
+      showMessage(`Upload failed: ${msg}`, 'error')
     } finally {
       setIsUploading(false)
       setUploadProgress('')

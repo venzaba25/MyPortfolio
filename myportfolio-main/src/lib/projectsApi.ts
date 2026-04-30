@@ -98,3 +98,43 @@ export async function deleteProject(id: number) {
   const { error } = await supabase.from("projects").delete().eq("id", id);
   if (error) throw error;
 }
+
+// ---------------------------------------------------------------------------
+// Image storage (Supabase Storage bucket: "project-images")
+// ---------------------------------------------------------------------------
+
+const BUCKET = "project-images";
+
+const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/\.[^.]+$/, "") // strip extension; we re-add it
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60) || "image";
+
+export async function uploadProjectImage(file: File, folder: string): Promise<string> {
+  const cleanFolder = folder.replace(/^\/+|\/+$/g, "").replace(/[^a-zA-Z0-9/_-]+/g, "-") || "uploads";
+  const ext = (file.name.match(/\.[^.]+$/)?.[0] ?? "").toLowerCase();
+  const path = `${cleanFolder}/${Date.now()}-${slugify(file.name)}${ext}`;
+
+  const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
+    cacheControl: "3600",
+    upsert: false,
+    contentType: file.type || undefined,
+  });
+  if (error) throw error;
+
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  return data.publicUrl;
+}
+
+export async function listProjectImageFolders(): Promise<string[]> {
+  const { data, error } = await supabase.storage.from(BUCKET).list("", { limit: 1000 });
+  if (error) throw error;
+  // Folders show up as entries with no metadata (id is null for prefixes)
+  return (data ?? [])
+    .filter((entry) => entry.id === null || entry.metadata === null)
+    .map((entry) => entry.name)
+    .sort();
+}

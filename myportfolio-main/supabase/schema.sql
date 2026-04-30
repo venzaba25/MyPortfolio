@@ -54,3 +54,35 @@ create policy "Authenticated can update"
 create policy "Authenticated can delete"
   on public.projects for delete to authenticated
   using (true);
+
+-- ---------------------------------------------------------------------------
+-- Storage bucket for project images (uploaded from the admin dashboard).
+-- Public bucket so image URLs work for site visitors.
+-- Only authenticated users can upload / replace / delete.
+-- ---------------------------------------------------------------------------
+
+insert into storage.buckets (id, name, public)
+values ('project-images', 'project-images', true)
+on conflict (id) do update set public = excluded.public;
+
+drop policy if exists "Public read project-images"        on storage.objects;
+drop policy if exists "Authenticated upload project-images" on storage.objects;
+drop policy if exists "Authenticated update project-images" on storage.objects;
+drop policy if exists "Authenticated delete project-images" on storage.objects;
+
+create policy "Public read project-images"
+  on storage.objects for select
+  using (bucket_id = 'project-images');
+
+create policy "Authenticated upload project-images"
+  on storage.objects for insert to authenticated
+  with check (bucket_id = 'project-images');
+
+create policy "Authenticated update project-images"
+  on storage.objects for update to authenticated
+  using (bucket_id = 'project-images')
+  with check (bucket_id = 'project-images');
+
+create policy "Authenticated delete project-images"
+  on storage.objects for delete to authenticated
+  using (bucket_id = 'project-images');

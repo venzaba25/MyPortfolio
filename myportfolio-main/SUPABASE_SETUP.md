@@ -6,7 +6,7 @@ Follow these steps **once** to wire everything up.
 
 ---
 
-## 1. Create the `projects` table in Supabase
+## 1. Create the `projects` table + image storage in Supabase
 
 1. Go to your Supabase project: <https://supabase.com/dashboard/project/gjzybjtmnwcidpvfwrbc>
 2. Open **SQL Editor** → **New query**
@@ -14,9 +14,12 @@ Follow these steps **once** to wire everything up.
 4. Copy the entire contents, paste into the SQL editor, and click **Run**
 5. You should see `Success. No rows returned`
 
-This creates the table with the right columns, an `updated_at` trigger, and Row-Level-Security policies:
-- **Anyone** can read projects (so the public site works)
-- **Only signed-in users** (your admin login) can insert / update / delete
+This creates:
+- The `projects` table (with an `updated_at` trigger)
+- A public Storage bucket called `project-images` for admin image uploads
+- Row-Level-Security policies on both:
+  - **Anyone** can read projects and view images
+  - **Only signed-in users** (your admin login) can insert / update / delete projects, or upload / delete images
 
 ---
 
@@ -71,9 +74,10 @@ Open your project on Vercel → **Settings → Environment Variables** and add:
 | `VITE_SUPABASE_URL` | `https://gjzybjtmnwcidpvfwrbc.supabase.co` | Production, Preview, Development |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | `sb_publishable_fAkfjBk3i_duU1bKwx18zQ_G7jDbCmJ` | Production, Preview, Development |
 
-That's it for Vercel — since project data now lives in Supabase, you do **not** need:
+That's it for Vercel — since project data and images now live in Supabase, you do **not** need:
 - ~~`GITHUB_TOKEN`~~ (no more committing `projects.json` from the live site)
 - ~~`SUPABASE_SERVICE_ROLE_KEY`~~ on Vercel (only needed if you re-run the seed script)
+- ~~`BLOB_READ_WRITE_TOKEN`~~ (image uploads now go to Supabase Storage instead of Vercel Blob)
 
 After adding the variables on Vercel, **redeploy** so the new env values get baked into the build.
 
@@ -97,11 +101,20 @@ If something doesn't work, check the browser console for errors. The most common
 
 ## What changed in the code
 
-- `src/lib/projectsApi.ts` — new module: read/write projects through `supabase-js`
+- `src/lib/projectsApi.ts` — new module: read/write projects + upload images through `supabase-js`
 - `src/components/Projects.tsx` — fetches from Supabase (falls back to static JSON if offline)
-- `src/pages/AdminDashboard.tsx` — saves and deletes through Supabase instead of `/api/projects`
+- `src/pages/AdminDashboard.tsx` — saves/deletes projects and uploads images through Supabase
 - `scripts/seed-supabase.mjs` — one-shot seeder that pushes `projects.json` into Supabase
-- `supabase/schema.sql` — table, trigger, and RLS policies
+- `supabase/schema.sql` — projects table, RLS policies, **and** the `project-images` Storage bucket
 - `package.json` — added `npm run seed`
 
-The old `/api/projects` Vercel function and the GitHub-commit logic are no longer used by the site. You can leave them in place or delete them later — your call.
+The old `/api/projects` and `/api/upload` Vercel functions and the GitHub-commit / Vercel Blob logic are no longer used by the site. You can leave them in place or delete them later — your call.
+
+## How image uploads work now
+
+When you upload images from the admin dashboard:
+1. The file is sent **directly** from your browser to Supabase Storage (bucket: `project-images`)
+2. The folder name you choose becomes a subfolder inside the bucket (e.g. `project-images/travel-site/123-cover.png`)
+3. You get back a **public URL** that's automatically saved to the project's `image` or `images` field
+
+You can browse uploaded files anytime in the Supabase dashboard → **Storage → project-images**.
