@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "pPcNvWlYLYMjnFOULdxCA"
+uri = "file://myportfolio-main/SUPABASE_SETUP.md"
+type = "text"
+title = "Supabase + Environment Setup Guide"
