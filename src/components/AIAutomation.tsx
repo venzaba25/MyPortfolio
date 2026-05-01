@@ -43,14 +43,14 @@ const useCases = [
 
 export default function AIAutomation() {
   return (
-    <section id="ai" className="relative py-16 md:py-24 px-5 overflow-hidden">
+    <section id="ai" className="relative py-10 md:py-24 px-5 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-violet-950/10 to-transparent pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] bg-violet-600/10 rounded-full blur-[160px] -z-10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto">
         <ScrollReveal direction="up">
-          <div className="text-center mb-10 md:mb-14">
+          <div className="text-center mb-8 md:mb-14">
             <p className="text-xs uppercase tracking-[0.3em] text-violet-300 font-semibold mb-4">
               AI &amp; Automation
             </p>

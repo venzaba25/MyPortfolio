@@ -80,13 +80,13 @@ const services = [
 
 export default function Services() {
   return (
-    <section id="services" className="relative py-16 md:py-24 px-5 overflow-hidden">
+    <section id="services" className="relative py-10 md:py-24 px-5 overflow-hidden">
       <div className="absolute top-1/4 right-0 w-[28rem] h-[28rem] bg-blue-600/10 rounded-full blur-[140px] -z-10 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[28rem] h-[28rem] bg-violet-600/10 rounded-full blur-[140px] -z-10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto">
         <ScrollReveal direction="up">
-          <div className="text-center mb-16">
+          <div className="text-center mb-8 md:mb-16">
             <p className="text-xs uppercase tracking-[0.3em] text-cyan-400/80 font-semibold mb-4">
               Services
             </p>

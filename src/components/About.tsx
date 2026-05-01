@@ -33,7 +33,7 @@ export default function About() {
   return (
     <section
       id="about"
-      className="relative py-16 md:py-24 px-5 overflow-hidden"
+      className="relative py-10 md:py-24 px-5 overflow-hidden"
     >
       <div className="absolute top-1/3 -left-20 w-96 h-96 bg-violet-600/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-600/10 rounded-full blur-[120px] -z-10 pointer-events-none" />

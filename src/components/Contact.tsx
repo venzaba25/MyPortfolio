@@ -86,7 +86,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen py-16 md:py-24 px-5 relative overflow-hidden" id="contact">
+    <div className="py-10 md:py-24 px-5 relative overflow-hidden" id="contact">
       {/* Background Glows */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
@@ -94,7 +94,7 @@ export default function Contact() {
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <ScrollReveal direction="up">
-          <div className="mb-10 md:mb-20 text-center">
+          <div className="mb-8 md:mb-20 text-center">
             <p className="text-xs uppercase tracking-[0.3em] text-cyan-400/80 font-semibold mb-4">
               Contact
             </p>

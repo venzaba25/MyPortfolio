@@ -47,10 +47,10 @@ export default function Projects({ className }: ProjectsProps) {
   };
 
   return (
-    <section id="projects" className={cn("relative py-16 md:py-24 overflow-hidden", className)}>
+    <section id="projects" className={cn("relative py-10 md:py-24 overflow-hidden", className)}>
       <div className="relative max-w-7xl mx-auto w-full px-5 sm:px-6 lg:px-8">
         <ScrollReveal direction="up">
-          <div className="text-center mb-10 md:mb-16">
+          <div className="text-center mb-8 md:mb-16">
             <p className="text-xs uppercase tracking-[0.3em] text-cyan-400/80 font-semibold mb-4">
               Selected Work
             </p>
