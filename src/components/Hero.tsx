@@ -32,11 +32,11 @@ export default function Hero({
       {/* Electric mesh glow */}
       <div className="pointer-events-none absolute inset-0 [background-image:radial-gradient(circle_at_10%_10%,rgba(87,78,225,0.1),transparent_30%), radial-gradient(circle_at_90%_20%,rgba(255,76,246,0.1),transparent_30%), radial-gradient(circle_at_40%_80%,rgba(35,229,181,0.12),transparent_40%)]" />
 
-      <div className="relative z-20 flex flex-col lg:flex-row items-center justify-center w-full max-w-7xl mx-auto px-4 lg:px-8 gap-8 lg:gap-16 pt-24 lg:pt-0">
+      <div className="relative z-20 flex flex-col lg:flex-row items-center justify-center w-full max-w-7xl mx-auto px-5 lg:px-8 gap-6 lg:gap-16 pt-14 lg:pt-0">
         
         {/* Profile Image */}
-        <ScrollReveal direction="right" delay={0.2} className="flex-1 flex justify-center lg:justify-end items-end pb-8 lg:pb-16 lg:order-2">
-            <div className="w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 rounded-full p-[5px] lg:p-[10px] glowing-orb-border profile-orb">
+        <ScrollReveal direction="right" delay={0.2} className="flex-1 flex justify-center lg:justify-end items-end pb-4 lg:pb-16 lg:order-2">
+            <div className="w-52 h-52 sm:w-72 sm:h-72 lg:w-96 lg:h-96 rounded-full p-[5px] lg:p-[10px] glowing-orb-border profile-orb">
               <div className="moving-orb orb-1 orb-blue" />
               <div className="moving-orb orb-2 orb-red" />
               <div className="moving-orb orb-3 orb-yellow" />
@@ -51,7 +51,7 @@ export default function Hero({
           </ScrollReveal>
 
         {/* Text Content */}
-        <div className="flex-1 text-center lg:text-left space-y-6 lg:order-1">
+        <div className="flex-1 text-center lg:text-left space-y-5 lg:order-1">
           {/* Availability pill */}
           <ScrollReveal direction="left" delay={0}>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
@@ -118,17 +118,17 @@ export default function Hero({
           
           {/* CTAs */}
           <ScrollReveal direction="left" delay={0.25}>
-            <div className="flex flex-col sm:flex-row gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-1">
               <button 
                 onClick={() => setIsContactModalOpen(true)}
-                className="px-8 py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.7)] transform hover:scale-[1.03] active:scale-95 transition-all duration-300 text-center border-none"
+                className="px-7 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.7)] transform hover:scale-[1.03] active:scale-95 transition-all duration-300 text-center border-none"
               >
                 Hire Me
               </button>
-              <a href="#projects" className="px-8 py-3.5 bg-white/5 hover:bg-white/10 text-white font-semibold rounded-xl border border-white/15 backdrop-blur-sm hover:border-white/30 transition-all duration-200 text-center">
+              <a href="#projects" className="px-7 py-3 bg-white/5 hover:bg-white/10 text-white font-semibold rounded-xl border border-white/15 backdrop-blur-sm hover:border-white/30 transition-all duration-200 text-center">
                 View My Work
               </a>
-              <a href="#contact" className="px-8 py-3.5 text-neutral-300 font-semibold rounded-xl hover:text-white transition-all duration-200 text-center underline-offset-4 hover:underline">
+              <a href="#contact" className="py-3 text-neutral-400 text-sm font-medium hover:text-white transition-all duration-200 text-center underline-offset-4 hover:underline">
                 Or just say hi →
               </a>
             </div>
@@ -136,7 +136,7 @@ export default function Hero({
 
           {/* Stats */}
           <ScrollReveal direction="left" delay={0.3}>
-            <div className="flex justify-center lg:justify-start space-x-8 pt-4 border-t border-white/5 mt-4">
+            <div className="flex justify-center lg:justify-start space-x-6 sm:space-x-8 pt-3 border-t border-white/5 mt-2">
               <div className="text-center group pt-4">
                 <p className="text-3xl font-bold text-white group-hover:text-blue-400 transition-colors">
                   <Counter value={2} suffix="+" />

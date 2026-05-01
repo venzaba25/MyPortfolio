@@ -33,13 +33,13 @@ export default function About() {
   return (
     <section
       id="about"
-      className="relative py-24 px-4 overflow-hidden"
+      className="relative py-16 md:py-24 px-5 overflow-hidden"
     >
       <div className="absolute top-1/3 -left-20 w-96 h-96 bg-violet-600/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-600/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-12 gap-12 items-start">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           <ScrollReveal direction="left" className="lg:col-span-5">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-cyan-400/80 font-semibold mb-4">
@@ -63,7 +63,7 @@ export default function About() {
           <div className="lg:col-span-7 grid sm:grid-cols-2 gap-5">
             {pillars.map((p, i) => (
               <ScrollReveal key={p.title} direction="up" delay={0.05 * i}>
-                <div className="group h-full p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-cyan-400/40 hover:bg-white/[0.05] transition-all duration-300">
+                <div className="group h-full p-5 md:p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-cyan-400/40 hover:bg-white/[0.05] transition-all duration-300">
                   <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 border border-white/10 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
                     <p.icon className="h-5 w-5 text-cyan-300" />
                   </div>

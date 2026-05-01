@@ -60,13 +60,13 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section id="testimonials" className="relative py-24 px-4 overflow-hidden">
+    <section id="testimonials" className="relative py-16 md:py-24 px-5 overflow-hidden">
       <div className="absolute top-1/3 left-0 w-[28rem] h-[28rem] bg-cyan-600/10 rounded-full blur-[140px] -z-10 pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[28rem] h-[28rem] bg-blue-600/10 rounded-full blur-[140px] -z-10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto">
         <ScrollReveal direction="up">
-          <div className="text-center mb-14">
+          <div className="text-center mb-10 md:mb-14">
             <p className="text-xs uppercase tracking-[0.3em] text-cyan-400/80 font-semibold mb-4">
               Testimonials
             </p>
@@ -85,7 +85,7 @@ export default function Testimonials() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((t, i) => (
             <ScrollReveal key={t.name} direction="up" delay={0.05 * i}>
-              <figure className="relative h-full p-7 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-cyan-400/40 transition-all">
+              <figure className="relative h-full p-5 md:p-7 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-cyan-400/40 transition-all">
                 <IconQuote className="absolute top-5 right-5 h-7 w-7 text-white/10" />
 
                 <div className="flex items-center gap-1 text-amber-400 mb-4">

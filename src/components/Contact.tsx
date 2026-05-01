@@ -86,7 +86,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen py-24 px-4 relative overflow-hidden" id="contact">
+    <div className="min-h-screen py-16 md:py-24 px-5 relative overflow-hidden" id="contact">
       {/* Background Glows */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
@@ -94,11 +94,11 @@ export default function Contact() {
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <ScrollReveal direction="up">
-          <div className="mb-20 text-center">
+          <div className="mb-10 md:mb-20 text-center">
             <p className="text-xs uppercase tracking-[0.3em] text-cyan-400/80 font-semibold mb-4">
               Contact
             </p>
-            <h2 className="text-5xl md:text-6xl font-extrabold text-white mb-6 tracking-tight">
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-white mb-4 md:mb-6 tracking-tight">
               Let's build your next{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">winning product.</span>
             </h2>
@@ -109,11 +109,11 @@ export default function Contact() {
           </div>
         </ScrollReveal>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           {/* Contact Info (Left) */}
           <div className="lg:col-span-5">
             <ScrollReveal direction="left" delay={0.2}>
-              <div className="space-y-10">
+              <div className="space-y-7 md:space-y-10">
                 <div>
                   <h3 className="text-3xl font-bold text-white mb-6">
                     Let's Build Something <br />
@@ -208,8 +208,8 @@ export default function Contact() {
                 {/* Glow behind card */}
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-[2.5rem] blur opacity-10 group-hover:opacity-20 transition duration-1000 group-hover:duration-200"></div>
                 
-                <div className="relative rounded-[2rem] bg-zinc-900/60 backdrop-blur-xl border-2 border-cyan-500/30 p-10">
-                  <h4 className="text-xl font-semibold text-white mb-8 flex items-center gap-2">
+                <div className="relative rounded-[2rem] bg-zinc-900/60 backdrop-blur-xl border-2 border-cyan-500/30 p-5 sm:p-8 md:p-10">
+                  <h4 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
                     <IconMessage2 className="h-5 w-5 text-blue-500" />
                     Send a Message
                   </h4>

@@ -43,14 +43,14 @@ const useCases = [
 
 export default function AIAutomation() {
   return (
-    <section id="ai" className="relative py-24 px-4 overflow-hidden">
+    <section id="ai" className="relative py-16 md:py-24 px-5 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-violet-950/10 to-transparent pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] bg-violet-600/10 rounded-full blur-[160px] -z-10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto">
         <ScrollReveal direction="up">
-          <div className="text-center mb-14">
+          <div className="text-center mb-10 md:mb-14">
             <p className="text-xs uppercase tracking-[0.3em] text-violet-300 font-semibold mb-4">
               AI &amp; Automation
             </p>
@@ -69,7 +69,7 @@ export default function AIAutomation() {
 
         {/* Featured chatbot card */}
         <ScrollReveal direction="up" delay={0.05}>
-          <div className="relative mb-10 p-8 md:p-10 rounded-3xl border border-violet-400/20 bg-gradient-to-br from-violet-950/30 via-black/40 to-fuchsia-950/20 backdrop-blur-sm overflow-hidden">
+          <div className="relative mb-10 p-5 md:p-10 rounded-3xl border border-violet-400/20 bg-gradient-to-br from-violet-950/30 via-black/40 to-fuchsia-950/20 backdrop-blur-sm overflow-hidden">
             <div className="absolute -top-24 -right-24 w-72 h-72 bg-fuchsia-500/10 rounded-full blur-3xl" />
             <div className="grid md:grid-cols-2 gap-8 items-center relative">
               <div>
@@ -140,7 +140,7 @@ export default function AIAutomation() {
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {useCases.map((u, i) => (
             <ScrollReveal key={u.title} direction="up" delay={0.04 * i}>
-              <div className="group h-full p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-violet-400/40 transition-all">
+              <div className="group h-full p-5 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-violet-400/40 transition-all">
                 <div className="h-11 w-11 rounded-xl bg-violet-500/10 border border-violet-400/20 flex items-center justify-center mb-4">
                   <u.icon className="h-5 w-5 text-violet-300" />
                 </div>

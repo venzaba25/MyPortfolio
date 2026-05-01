@@ -80,7 +80,7 @@ const services = [
 
 export default function Services() {
   return (
-    <section id="services" className="relative py-24 px-4 overflow-hidden">
+    <section id="services" className="relative py-16 md:py-24 px-5 overflow-hidden">
       <div className="absolute top-1/4 right-0 w-[28rem] h-[28rem] bg-blue-600/10 rounded-full blur-[140px] -z-10 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[28rem] h-[28rem] bg-violet-600/10 rounded-full blur-[140px] -z-10 pointer-events-none" />
 
@@ -106,7 +106,7 @@ export default function Services() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {services.map((s, i) => (
             <ScrollReveal key={s.title} direction="up" delay={0.05 * i}>
-              <div className="group relative h-full p-7 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-white/25 backdrop-blur-sm transition-all duration-300 overflow-hidden">
+              <div className="group relative h-full p-5 md:p-7 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-white/25 backdrop-blur-sm transition-all duration-300 overflow-hidden">
                 {/* Accent glow */}
                 <div className={`absolute -top-20 -right-20 w-48 h-48 bg-gradient-to-br ${s.accent} opacity-[0.07] rounded-full blur-3xl group-hover:opacity-20 transition-opacity duration-500`} />
 
