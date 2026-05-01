@@ -22,13 +22,13 @@ args = "Start application"
 name = "Start application"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd myportfolio-main && npm run dev"
-waitForPort = 5000
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+waitForPort = 5000
 
 [[ports]]
 localPort = 5000
@@ -44,3 +44,4 @@ publicDir = "myportfolio-main/dist"
 [userenv.shared]
 SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdqenlianRtbndjaWRwdmZ3cmJjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NzUyNTExMiwiZXhwIjoyMDkzMTAxMTEyfQ.ulAx8bZ9-nr68p_kTPAlb2MRa0dy0sK2WXrf_InVvNg"
 SUPABASE_URL = "https://gjzybjtmnwcidpvfwrbc.supabase.co"
+VITE_SUPABASE_URL = "https://gjzybjtmnwcidpvfwrbc.supabase.co"
