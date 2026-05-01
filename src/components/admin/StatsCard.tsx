@@ -1,6 +1,6 @@
 "use client"
 
-import { LucideIcon, TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { type LucideIcon, TrendingUp, TrendingDown, Minus } from 'lucide-react'
 
 interface StatsCardProps {
   title: string
@@ -35,7 +35,6 @@ export default function StatsCard({ title, value, change, icon: Icon, descriptio
 
   return (
     <div className="group relative bg-[#0d1424] border border-white/[0.07] rounded-2xl p-5 hover:border-white/[0.14] hover:shadow-xl transition-all duration-300 overflow-hidden">
-      {/* Subtle gradient background on hover */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
       <div className="relative flex items-start justify-between gap-4">
@@ -59,7 +58,6 @@ export default function StatsCard({ title, value, change, icon: Icon, descriptio
         </div>
       </div>
 
-      {/* Bottom accent line */}
       <div className={`absolute bottom-0 left-0 h-[2px] w-0 bg-gradient-to-r ${a.ring} group-hover:w-full transition-all duration-500`} />
     </div>
   )
