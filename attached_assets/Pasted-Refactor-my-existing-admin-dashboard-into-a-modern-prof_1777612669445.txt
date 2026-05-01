@@ -1,0 +1,64 @@
+Refactor my existing admin dashboard into a modern, professional, and fully responsive admin panel while preserving ALL current functionalities and logic.
+
+GOALS:
+- Do NOT break any existing features, APIs, or backend connections.
+- Improve UI/UX to match a standard professional SaaS admin dashboard.
+- Code should be clean, modular, and maintainable.
+
+LAYOUT REQUIREMENTS:
+1. Add a fixed Sidebar (left side):
+   - Logo / Brand at the top
+   - Navigation links (Dashboard, Users, Services, Settings, etc.)
+   - Active state highlighting
+   - Collapsible for mobile (hamburger menu)
+
+2. Add a Top Navbar:
+   - Page title (dynamic based on route)
+   - User profile dropdown (avatar, logout, settings)
+   - Notification icon (optional placeholder)
+   - Mobile menu toggle
+
+3. Main Content Area:
+   - Clean spacing and padding
+   - Card-based layout for sections
+   - Responsive grid system
+
+DESIGN STYLE:
+- Modern SaaS style (similar to Stripe / Vercel / Tailwind UI dashboards)
+- Use consistent spacing, typography, and colors
+- Use soft shadows, rounded corners, and clean icons
+- Support light mode (dark mode optional)
+
+RESPONSIVENESS:
+- Fully responsive (desktop, tablet, mobile)
+- Sidebar collapses into drawer on small screens
+- Proper spacing and stacking on mobile
+
+COMPONENT STRUCTURE:
+- Break into reusable components:
+  - Sidebar
+  - Navbar
+  - Layout wrapper
+  - Cards / Tables / Forms
+- Follow best practices for component architecture
+
+TECH STACK:
+- Keep the current framework (React / Next.js / etc.)
+- Prefer Tailwind CSS (or existing styling system)
+- Use clean state management (no messy inline logic)
+
+EXTRA IMPROVEMENTS:
+- Add loading states (spinners/skeletons)
+- Improve buttons, forms, and tables UI
+- Add hover and transition effects
+- Improve accessibility (labels, contrast, clickable areas)
+
+IMPORTANT:
+- Do NOT remove any existing functionality
+- Do NOT change backend logic unless necessary
+- Ensure everything still works after refactor
+
+OUTPUT:
+- Provide the full updated layout code
+- Clearly show component structure
+- Make it production-ready and clean

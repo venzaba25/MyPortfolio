@@ -9,15 +9,17 @@ interface AdminCardProps {
   className?: string
   padding?: 'sm' | 'md' | 'lg'
   hover?: boolean
+  action?: ReactNode
 }
 
-export default function AdminCard({ 
-  children, 
-  title, 
-  description, 
-  className = '', 
+export default function AdminCard({
+  children,
+  title,
+  description,
+  className = '',
   padding = 'md',
-  hover = true 
+  hover = false,
+  action,
 }: AdminCardProps) {
   const paddingClasses = {
     sm: 'p-4',
@@ -27,21 +29,26 @@ export default function AdminCard({
 
   return (
     <div
-      className={`bg-slate-800 border border-slate-700 rounded-xl ${
-        hover ? 'hover:border-slate-600 hover:shadow-lg transition-all duration-200' : ''
+      className={`bg-[#0d1424] border border-white/[0.07] rounded-2xl ${
+        hover ? 'hover:border-white/[0.13] hover:shadow-lg hover:shadow-black/30 transition-all duration-200' : ''
       } ${className}`}
     >
-      {(title || description) && (
-        <div className={`${paddingClasses[padding]} pb-0`}>
-          {title && (
-            <h3 className="text-lg font-semibold text-white mb-1">{title}</h3>
-          )}
-          {description && (
-            <p className="text-sm text-slate-400">{description}</p>
+      {(title || description || action) && (
+        <div className={`${paddingClasses[padding]} pb-4 flex items-start justify-between gap-4 border-b border-white/[0.05]`}>
+          <div className="min-w-0">
+            {title && (
+              <h3 className="text-base font-semibold text-white">{title}</h3>
+            )}
+            {description && (
+              <p className="text-sm text-slate-500 mt-0.5">{description}</p>
+            )}
+          </div>
+          {action && (
+            <div className="flex-shrink-0">{action}</div>
           )}
         </div>
       )}
-      <div className={`${paddingClasses[padding]} ${title || description ? 'pt-4' : ''}`}>
+      <div className={`${paddingClasses[padding]} ${title || description || action ? 'pt-5' : ''}`}>
         {children}
       </div>
     </div>

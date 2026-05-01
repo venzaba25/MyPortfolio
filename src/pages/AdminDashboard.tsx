@@ -399,62 +399,78 @@ export default function AdminDashboard() {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#030014] p-4 font-sans">
+      <div className="flex items-center justify-center min-h-screen bg-[#060d1f] p-4 font-sans">
+        {/* Background grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] pointer-events-none" />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(37,99,235,0.15) 0%, transparent 70%)' }} />
+
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="p-8 bg-neutral-900 border border-neutral-800 rounded-3xl w-full max-w-md shadow-2xl relative overflow-hidden"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="relative w-full max-w-sm"
         >
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500" />
+          {/* Card */}
+          <div className="bg-[#0d1424] border border-white/[0.08] rounded-2xl p-8 shadow-2xl shadow-black/60">
+            {/* Top accent */}
+            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-blue-500/60 to-transparent" />
 
-          <div className="flex items-center justify-center h-12 w-12 rounded-2xl bg-blue-500/10 border border-blue-500/30 mx-auto mb-4">
-            <ShieldCheck className="h-6 w-6 text-blue-400" />
-          </div>
-          <h2 className="text-3xl font-bold text-white mb-2 text-center">Admin Login</h2>
-          <p className="text-neutral-500 text-center mb-8 text-sm">
-            Sign in with your Supabase admin account
-          </p>
+            <div className="flex flex-col items-center mb-8">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-600/40 mb-4">
+                <ShieldCheck className="h-6 w-6 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-white tracking-tight">Admin Portal</h2>
+              <p className="text-slate-500 text-sm mt-1.5">Sign in to manage your portfolio</p>
+            </div>
 
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div>
-              <label className="text-xs text-neutral-500 uppercase tracking-widest block mb-2 px-1">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white outline-none focus:border-blue-500 transition-colors"
-                placeholder="admin@example.com"
-                required
-              />
-            </div>
-            <div>
-              <label className="text-xs text-neutral-500 uppercase tracking-widest block mb-2 px-1">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white outline-none focus:border-blue-500 transition-colors"
-                placeholder="••••••••"
-                required
-              />
-            </div>
-            {authError && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm text-center"
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-2">Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-white outline-none focus:border-blue-500/60 focus:bg-white/[0.06] transition-all placeholder-slate-600 text-sm"
+                  placeholder="admin@example.com"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-2">Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-white outline-none focus:border-blue-500/60 focus:bg-white/[0.06] transition-all placeholder-slate-600 text-sm"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+
+              {authError && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-2.5 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm"
+                >
+                  <span className="w-4 h-4 flex-shrink-0 text-red-400">✕</span>
+                  {authError}
+                </motion.div>
+              )}
+
+              <button
+                type="submit"
+                disabled={authLoading}
+                className="w-full py-3 mt-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl text-white text-sm font-semibold transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2"
               >
-                {authError}
-              </motion.div>
-            )}
-            <button
-              type="submit"
-              disabled={authLoading}
-              className="w-full py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 rounded-xl text-white font-bold transition-all shadow-lg shadow-blue-600/20"
-            >
-              {authLoading ? 'Signing in...' : 'Sign In'}
-            </button>
-          </form>
+                {authLoading ? (
+                  <><Loader2 className="animate-spin h-4 w-4" /> Signing in…</>
+                ) : 'Sign In'}
+              </button>
+            </form>
+          </div>
         </motion.div>
       </div>
     )
@@ -463,21 +479,25 @@ export default function AdminDashboard() {
   // Main Dashboard Layout
   return (
     <>
-    <div className="min-h-screen bg-slate-900 flex">
+    <div className="min-h-screen bg-[#060d1f] flex">
       {/* Sidebar */}
       <Sidebar
         isOpen={isMobileSidebarOpen}
         onToggle={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
         isMobile={isMobile}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
+        userEmail={session?.user?.email}
+        onLogout={handleLogout}
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:ml-0">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Navbar */}
         <Navbar
           onMobileMenuToggle={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-          title="Deployment Manager"
+          title="Projects Dashboard"
+          userEmail={session?.user?.email}
+          onLogout={handleLogout}
         />
 
         {/* Page Content */}
@@ -502,76 +522,94 @@ export default function AdminDashboard() {
             </AnimatePresence>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <StatsCard
                 title="Total Projects"
                 value={projects.length}
                 icon={FolderOpen}
-                change={{ value: '+12%', type: 'increase' }}
+                change={{ value: 'All time', type: 'neutral' }}
+                accent="blue"
               />
               <StatsCard
                 title="Featured"
                 value={projects.filter(p => p.featured).length}
                 icon={LayoutDashboard}
-                change={{ value: '+2', type: 'increase' }}
+                change={{ value: `${Math.round((projects.filter(p => p.featured).length / Math.max(projects.length, 1)) * 100)}% of total`, type: 'increase' }}
+                accent="indigo"
               />
               <StatsCard
                 title="Live Projects"
                 value={projects.filter(p => p.liveUrl).length}
                 icon={BarChart3}
-                change={{ value: '+5%', type: 'increase' }}
+                change={{ value: 'With live URL', type: 'neutral' }}
+                accent="emerald"
               />
               <StatsCard
-                title="API Status"
-                value={apiConnected ? 'Online' : 'Offline'}
+                title="DB Status"
+                value={apiConnected ? 'Connected' : 'Offline'}
                 icon={apiConnected ? Wifi : WifiOff}
-                description={apiConnected ? 'Connected to Supabase' : 'Using static data'}
+                description={apiConnected ? 'Supabase is live' : 'Using static fallback'}
+                accent={apiConnected ? 'emerald' : 'rose'}
               />
             </div>
 
             {/* Quick Actions */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-wrap gap-3">
               <Link
                 to="/admin/inquiries"
-                className="flex items-center gap-2 px-5 py-3 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 rounded-xl text-blue-300 font-bold transition-all"
+                className="flex items-center gap-2 px-4 py-2.5 bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/30 hover:border-blue-500/50 rounded-xl text-blue-300 text-sm font-semibold transition-all"
               >
-                <Inbox size={18} /> View Inquiries
+                <Inbox size={16} /> Inquiries
               </Link>
               <button
                 onClick={addNewProject}
-                className="flex items-center gap-2 px-5 py-3 bg-green-600 hover:bg-green-500 rounded-xl text-white font-bold transition-all shadow-lg shadow-green-600/20"
+                className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-white text-sm font-semibold transition-all shadow-lg shadow-emerald-600/20"
               >
                 <Plus size={18} /> Add New Project
               </button>
               <button
                 onClick={fetchProjects}
                 disabled={isLoading}
-                className="flex items-center gap-2 px-4 py-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-300 transition-all border border-slate-700"
+                className="flex items-center gap-2 px-3 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-slate-400 hover:text-white transition-all border border-white/[0.07]"
+                title="Refresh"
               >
-                <RefreshCw size={16} className={isLoading ? 'animate-spin' : ''} />
+                <RefreshCw size={15} className={isLoading ? 'animate-spin' : ''} />
               </button>
               <button
                 onClick={() => handleSave(projects)}
                 disabled={isLoading || !apiConnected}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl text-white font-bold transition-all shadow-lg disabled:opacity-50 ${
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold transition-all shadow-lg disabled:opacity-40 disabled:cursor-not-allowed ${
                   apiConnected
-                    ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/20'
-                    : 'bg-slate-700 cursor-not-allowed shadow-none'
+                    ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/25'
+                    : 'bg-white/10 shadow-none'
                 }`}
               >
-                {isLoading ? 'Saving...' : <><Save size={18} /> Save Changes</>}
+                {isLoading ? (
+                  <><RefreshCw size={14} className="animate-spin" /> Saving…</>
+                ) : (
+                  <><Save size={14} /> Save Changes</>
+                )}
               </button>
             </div>
 
             {/* Projects Table */}
-            <AdminCard title="Projects" description={`Showing ${filteredProjects.length} of ${projects.length} projects`}>
-              <div className="mb-4">
+            <AdminCard
+              title="Projects"
+              description={`${filteredProjects.length} of ${projects.length} projects`}
+              action={
+                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold ${apiConnected ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${apiConnected ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                  {apiConnected ? 'Live' : 'Offline'}
+                </span>
+              }
+            >
+              <div className="mb-5">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
                   <input
                     type="text"
-                    placeholder="Search projects by title, description, or technology..."
-                    className="w-full pl-10 pr-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 outline-none focus:border-blue-500 transition-colors"
+                    placeholder="Search by title, description, or technology…"
+                    className="w-full pl-10 pr-4 py-2.5 bg-white/[0.04] border border-white/[0.07] rounded-xl text-white placeholder-slate-500 outline-none focus:border-blue-500/60 focus:bg-white/[0.06] transition-all text-sm"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -583,43 +621,49 @@ export default function AdminDashboard() {
                 {filteredProjects.map((project) => (
                   <motion.div
                     key={project.id}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="border border-slate-700 rounded-xl overflow-hidden bg-slate-800/50"
+                    className="border border-white/[0.07] rounded-xl overflow-hidden bg-white/[0.02] hover:border-white/[0.12] transition-colors"
                   >
                     <div
-                      className="flex items-center gap-4 p-6 cursor-pointer"
+                      className="flex items-center gap-4 p-5 cursor-pointer group"
                       onClick={() => setExpandedProject(expandedProject === project.id ? null : project.id)}
                     >
-                      <GripVertical className="text-neutral-600 flex-shrink-0" size={20} />
-                      {project.image && (
+                      <GripVertical className="text-slate-600 flex-shrink-0 group-hover:text-slate-400 transition-colors" size={18} />
+                      {project.image ? (
                         <img
                           src={project.image}
                           alt={project.title}
-                          className="w-16 h-10 object-cover rounded-lg border border-neutral-700 flex-shrink-0"
+                          className="w-14 h-9 object-cover rounded-lg border border-white/[0.07] flex-shrink-0"
                         />
+                      ) : (
+                        <div className="w-14 h-9 rounded-lg bg-white/[0.04] border border-white/[0.07] flex-shrink-0 flex items-center justify-center">
+                          <FolderOpen size={14} className="text-slate-600" />
+                        </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-lg font-bold text-white truncate">{project.title}</h3>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {project.technologies.slice(0, 3).map((tech) => (
-                            <span key={tech} className="text-xs px-2 py-0.5 bg-neutral-800 text-neutral-400 rounded-full">{tech}</span>
+                        <h3 className="text-sm font-semibold text-white truncate">{project.title}</h3>
+                        <div className="flex flex-wrap gap-1 mt-1.5">
+                          {project.technologies.slice(0, 4).map((tech) => (
+                            <span key={tech} className="text-[11px] px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-md">{tech}</span>
                           ))}
-                          {project.technologies.length > 3 && (
-                            <span className="text-xs text-neutral-500">+{project.technologies.length - 3}</span>
+                          {project.technologies.length > 4 && (
+                            <span className="text-[11px] text-slate-500">+{project.technologies.length - 4} more</span>
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 flex-shrink-0">
                         {project.featured && (
-                          <span className="text-xs px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-full">Featured</span>
+                          <span className="text-[11px] px-2.5 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-lg font-medium">Featured</span>
                         )}
                         {project.liveUrl ? (
-                          <span className="text-xs px-3 py-1 bg-green-500/10 border border-green-500/30 text-green-400 rounded-full">Live</span>
+                          <span className="text-[11px] px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-lg font-medium">Live</span>
                         ) : (
-                          <span className="text-xs px-3 py-1 bg-neutral-800 border border-neutral-700 text-neutral-500 rounded-full">No URL</span>
+                          <span className="text-[11px] px-2.5 py-1 bg-white/[0.04] border border-white/[0.07] text-slate-500 rounded-lg">Draft</span>
                         )}
-                        {expandedProject === project.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                        <div className={`p-1 rounded-lg text-slate-500 transition-transform duration-200 ${expandedProject === project.id ? 'rotate-180' : ''}`}>
+                          <ChevronDown size={16} />
+                        </div>
                       </div>
                     </div>
 
@@ -633,7 +677,7 @@ export default function AdminDashboard() {
                     transition={{ duration: 0.3 }}
                     className="overflow-hidden"
                   >
-                    <div className="border-t border-neutral-800 p-6 sm:p-8">
+                    <div className="border-t border-white/[0.07] p-6 sm:p-8 bg-white/[0.01]">
                       <div className="grid lg:grid-cols-2 gap-8">
                         {/* Left Column */}
                         <div className="space-y-6">
@@ -895,13 +939,15 @@ export default function AdminDashboard() {
         {/* Add New Project */}
         <button
           onClick={addNewProject}
-          className="mt-4 flex flex-col items-center justify-center gap-4 p-12 border-2 border-dashed border-neutral-800 rounded-[32px] text-neutral-500 hover:border-blue-500 hover:text-blue-500 hover:bg-blue-500/5 transition-all group"
+          className="mt-4 w-full flex flex-col items-center justify-center gap-3 p-10 border-2 border-dashed border-white/[0.07] rounded-2xl text-slate-600 hover:border-blue-500/40 hover:text-blue-400 hover:bg-blue-500/[0.04] transition-all duration-200 group"
         >
-          <div className="bg-neutral-800 p-4 rounded-2xl group-hover:bg-blue-600 group-hover:text-white transition-all">
-            <Plus size={32} />
+          <div className="w-12 h-12 rounded-xl bg-white/[0.04] flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all duration-200">
+            <Plus size={22} />
           </div>
-          <span className="font-bold tracking-wide uppercase text-sm">Add New Project Record</span>
-          {!apiConnected && <span className="text-xs text-yellow-500/60 mt-1">API offline — changes won't persist</span>}
+          <div>
+            <p className="text-sm font-semibold">Add New Project</p>
+            {!apiConnected && <p className="text-xs text-amber-500/70 mt-1">API offline — changes won't persist</p>}
+          </div>
         </button>
             </AdminCard>
           </div>
