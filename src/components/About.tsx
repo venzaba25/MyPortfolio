@@ -33,7 +33,7 @@ export default function About() {
   return (
     <section
       id="about"
-      className="relative py-10 md:py-24 px-5 overflow-hidden"
+      className="relative pt-6 pb-10 md:py-24 px-5 overflow-hidden"
     >
       <div className="absolute top-1/3 -left-20 w-96 h-96 bg-violet-600/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-600/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
@@ -41,17 +41,17 @@ export default function About() {
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           <ScrollReveal direction="left" className="lg:col-span-5">
-            <div>
+            <div className="text-center lg:text-left">
               <p className="text-xs uppercase tracking-[0.3em] text-cyan-400/80 font-semibold mb-4">
                 About
               </p>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-white leading-tight mb-6">
+              <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4 md:mb-6">
                 A flexible developer who actually ships{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-violet-400">
                   business results.
                 </span>
               </h2>
-              <p className="text-neutral-400 text-base md:text-lg leading-relaxed">
+              <p className="text-neutral-400 text-base md:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
                 I'm Venz — a freelance web, software and AI developer helping founders
                 and small teams turn ideas into polished, scalable digital products.
                 I treat every project like a product, not a deliverable: clear scope,
