@@ -35,7 +35,7 @@ export default function Hero({
       <div className="relative z-20 flex flex-col lg:flex-row items-center justify-center w-full max-w-7xl mx-auto px-5 lg:px-8 gap-6 lg:gap-16 pt-8 lg:pt-0">
         
         {/* Profile Image */}
-        <ScrollReveal direction="right" delay={0.2} className="order-2 lg:order-2 lg:flex-1 flex justify-center lg:justify-end lg:items-end pb-2 lg:pb-16">
+        <ScrollReveal direction="right" delay={0.2} className="order-1 lg:order-2 lg:flex-1 flex justify-center lg:justify-end lg:items-end pb-2 lg:pb-16">
             <div className="w-52 h-52 sm:w-72 sm:h-72 lg:w-96 lg:h-96 rounded-full p-[5px] lg:p-[10px] glowing-orb-border profile-orb">
               <div className="moving-orb orb-1 orb-blue" />
               <div className="moving-orb orb-2 orb-red" />
@@ -51,7 +51,7 @@ export default function Hero({
           </ScrollReveal>
 
         {/* Text Content */}
-        <div className="order-1 lg:order-1 w-full lg:flex-1 text-center lg:text-left space-y-5">
+        <div className="order-2 lg:order-1 w-full lg:flex-1 text-center lg:text-left space-y-5">
           {/* Availability pill */}
           <ScrollReveal direction="left" delay={0}>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
