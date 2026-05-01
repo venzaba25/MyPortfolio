@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 interface Column<T> {
   key: keyof T
