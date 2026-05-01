@@ -462,6 +462,7 @@ export default function AdminDashboard() {
 
   // Main Dashboard Layout
   return (
+    <>
     <div className="min-h-screen bg-slate-900 flex">
       {/* Sidebar */}
       <Sidebar
@@ -1200,7 +1201,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Upload Modal */}
       {uploadModalOpen && (
@@ -1279,5 +1280,6 @@ export default function AdminDashboard() {
         </div>
       )}
     </div>
+    </>
   )
 }

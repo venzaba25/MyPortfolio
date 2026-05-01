@@ -4,13 +4,16 @@ import path from 'path'
 import tailwindcss from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@tabler/icons-react": path.resolve(__dirname, "node_modules/@tabler/icons-react/dist/esm/tabler-icons-react.mjs"),
     },
+  },
+  optimizeDeps: {
+    include: ['@tabler/icons-react'],
   },
   server: {
     host: '0.0.0.0',
