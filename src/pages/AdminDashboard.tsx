@@ -608,12 +608,32 @@ export default function AdminDashboard() {
                     role="switch"
                     aria-checked={chatbotVisible}
                     onClick={() => !settingsLoading && toggleChatbot(!chatbotVisible)}
-                    style={{ background: chatbotVisible ? '#06b6d4' : '#3f3f46' }}
-                    className="relative inline-flex h-7 w-14 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
+                    style={{
+                      position: 'relative',
+                      display: 'inline-block',
+                      width: '48px',
+                      height: '26px',
+                      borderRadius: '13px',
+                      background: chatbotVisible ? '#06b6d4' : '#3f3f46',
+                      transition: 'background 0.25s',
+                      cursor: settingsLoading ? 'not-allowed' : 'pointer',
+                      border: 'none',
+                      flexShrink: 0,
+                      opacity: settingsLoading ? 0.6 : 1,
+                    }}
                   >
                     <span
-                      style={{ transform: chatbotVisible ? 'translateX(28px)' : 'translateX(2px)' }}
-                      className="inline-block h-[23px] w-[23px] mt-[2px] transform rounded-full bg-white shadow-md transition-transform duration-300 ease-in-out"
+                      style={{
+                        position: 'absolute',
+                        top: '3px',
+                        left: chatbotVisible ? '23px' : '3px',
+                        width: '20px',
+                        height: '20px',
+                        borderRadius: '50%',
+                        background: 'white',
+                        boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
+                        transition: 'left 0.25s',
+                      }}
                     />
                   </button>
                 </div>
