@@ -21,7 +21,7 @@ function writeSettings(data) {
 }
 
 const app = express();
-const PORT = process.env.PORT || 5174;
+const PORT = process.env.API_PORT || process.env.PORT || 3000;
 
 const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
