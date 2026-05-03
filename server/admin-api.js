@@ -298,46 +298,7 @@ app.get('/api/inquiries/unread-count', async (req, res) => {
   res.json({ count: count ?? 0 });
 });
 
-app.patch('/api/inquiries/:id', async (req, res) => {
-  if (!supabase) return res.status(503).json({ error: 'Database not configured.' });
-
-  const authHeader = req.headers['authorization'];
-  const token = authHeader?.replace('Bearer ', '');
-  if (!token) return res.status(401).json({ error: 'Unauthorized' });
-
-  const { data: user, error: authErr } = await supabase.auth.getUser(token);
-  if (authErr || !user?.user) return res.status(401).json({ error: 'Invalid token' });
-
-  const { id } = req.params;
-  const { isRead } = req.body;
-
-  const { error } = await supabase
-    .from('inquiries')
-    .update({ is_read: isRead })
-    .eq('id', id);
-
-  if (error) return res.status(500).json({ error: error.message });
-  res.json({ ok: true });
-});
-
-app.delete('/api/inquiries/:id', async (req, res) => {
-  if (!supabase) return res.status(503).json({ error: 'Database not configured.' });
-
-  const authHeader = req.headers['authorization'];
-  const token = authHeader?.replace('Bearer ', '');
-  if (!token) return res.status(401).json({ error: 'Unauthorized' });
-
-  const { data: user, error: authErr } = await supabase.auth.getUser(token);
-  if (authErr || !user?.user) return res.status(401).json({ error: 'Invalid token' });
-
-  const { id } = req.params;
-  const { error } = await supabase.from('inquiries').delete().eq('id', id);
-
-  if (error) return res.status(500).json({ error: error.message });
-  res.json({ ok: true });
-});
-
-// --- Reply to inquiry ---
+// --- Reply to inquiry (must be defined BEFORE /:id routes so Express 5 doesn't 405) ---
 app.post('/api/inquiries/:id/reply', async (req, res) => {
   if (!supabase) return res.status(503).json({ error: 'Database not configured.' });
 
@@ -421,6 +382,45 @@ app.post('/api/inquiries/:id/reply', async (req, res) => {
     console.error('[reply] Send error:', err);
     res.status(500).json({ error: 'Failed to send reply email.' });
   }
+});
+
+app.patch('/api/inquiries/:id', async (req, res) => {
+  if (!supabase) return res.status(503).json({ error: 'Database not configured.' });
+
+  const authHeader = req.headers['authorization'];
+  const token = authHeader?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+  const { data: user, error: authErr } = await supabase.auth.getUser(token);
+  if (authErr || !user?.user) return res.status(401).json({ error: 'Invalid token' });
+
+  const { id } = req.params;
+  const { isRead } = req.body;
+
+  const { error } = await supabase
+    .from('inquiries')
+    .update({ is_read: isRead })
+    .eq('id', id);
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ ok: true });
+});
+
+app.delete('/api/inquiries/:id', async (req, res) => {
+  if (!supabase) return res.status(503).json({ error: 'Database not configured.' });
+
+  const authHeader = req.headers['authorization'];
+  const token = authHeader?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+  const { data: user, error: authErr } = await supabase.auth.getUser(token);
+  if (authErr || !user?.user) return res.status(401).json({ error: 'Invalid token' });
+
+  const { id } = req.params;
+  const { error } = await supabase.from('inquiries').delete().eq('id', id);
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ ok: true });
 });
 
 app.listen(PORT, () => {

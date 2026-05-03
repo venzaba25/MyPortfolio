@@ -45,12 +45,18 @@ export default function AdminSettings() {
   useEffect(() => {
     if (!session) return
     fetch('/api/settings')
-      .then(r => r.json())
+      .then(async r => {
+        if (!r.ok) throw new Error(`Server returned ${r.status}`)
+        return r.json()
+      })
       .then(d => {
         setChatbotVisible(d.chatbot_visible !== false)
         setSettingsError('')
       })
-      .catch(() => setSettingsError('Could not load settings from API server.'))
+      .catch((err: unknown) => {
+        const msg = err instanceof Error ? err.message : String(err)
+        setSettingsError(`Could not load settings from API server. (${msg})`)
+      })
     checkDb()
   }, [session])
 
