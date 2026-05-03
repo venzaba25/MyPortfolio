@@ -151,29 +151,6 @@ export default function AdminDashboard() {
     }
   }, [isAuthenticated, fetchProjects, fetchFolders])
 
-  const toggleChatbot = async (value: boolean) => {
-    if (!session) return
-    setSettingsLoading(true)
-    try {
-      const token = session.access_token
-      const res = await fetch('/api/settings', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ chatbot_visible: value }),
-      })
-      if (res.ok) {
-        setChatbotVisible(value)
-        showMessage(`Support bot ${value ? 'shown' : 'hidden'} on public site.`)
-      } else {
-        showMessage('Failed to update setting.', 'error')
-      }
-    } catch {
-      showMessage('Failed to update setting.', 'error')
-    } finally {
-      setSettingsLoading(false)
-    }
-  }
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setAuthError(null)
@@ -204,6 +181,33 @@ export default function AdminDashboard() {
   const showMessage = (text: string, type: 'success' | 'error' = 'success') => {
     setMessage({ text, type })
     setTimeout(() => setMessage({ text: '', type: '' }), 4000)
+  }
+
+  const toggleChatbot = async (value: boolean) => {
+    if (!session) return
+    setChatbotVisible(value)
+    setSettingsLoading(true)
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ chatbot_visible: value }),
+      })
+      if (res.ok) {
+        showMessage(`Support bot ${value ? 'enabled' : 'disabled'} on public site.`)
+      } else {
+        setChatbotVisible(!value)
+        showMessage('Failed to update setting.', 'error')
+      }
+    } catch {
+      setChatbotVisible(!value)
+      showMessage('Failed to update setting.', 'error')
+    } finally {
+      setSettingsLoading(false)
+    }
   }
 
   const handleSave = useCallback(async (updatedProjects: Project[]) => {
@@ -595,20 +599,24 @@ export default function AdminDashboard() {
                   <p className="text-sm font-medium text-white">Support Bot</p>
                   <p className="text-xs text-slate-500 mt-0.5">Show or hide the AI chat widget on the public site</p>
                 </div>
-                <button
-                  onClick={() => toggleChatbot(!chatbotVisible)}
-                  disabled={settingsLoading}
-                  className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${
-                    chatbotVisible ? 'bg-cyan-500' : 'bg-zinc-700'
-                  }`}
-                  title={chatbotVisible ? 'Click to hide chat bot' : 'Click to show chat bot'}
-                >
-                  <span
-                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
-                      chatbotVisible ? 'translate-x-5' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
+                <div className="flex items-center gap-3">
+                  <span className={`text-xs font-semibold ${chatbotVisible ? 'text-cyan-400' : 'text-slate-500'}`}>
+                    {chatbotVisible ? 'Visible' : 'Hidden'}
+                  </span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={chatbotVisible}
+                    onClick={() => !settingsLoading && toggleChatbot(!chatbotVisible)}
+                    style={{ background: chatbotVisible ? '#06b6d4' : '#3f3f46' }}
+                    className="relative inline-flex h-7 w-14 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
+                  >
+                    <span
+                      style={{ transform: chatbotVisible ? 'translateX(28px)' : 'translateX(2px)' }}
+                      className="inline-block h-[23px] w-[23px] mt-[2px] transform rounded-full bg-white shadow-md transition-transform duration-300 ease-in-out"
+                    />
+                  </button>
+                </div>
               </div>
             </div>
 
