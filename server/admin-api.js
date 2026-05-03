@@ -59,13 +59,9 @@ app.get('/api/settings', (_req, res) => {
   res.json(readSettings());
 });
 
-app.patch('/api/settings', async (req, res) => {
-  if (!supabase) return res.status(503).json({ error: 'Database not configured.' });
+app.patch('/api/settings', (req, res) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader?.replace('Bearer ', '');
-  if (!token) return res.status(401).json({ error: 'Unauthorized' });
-  const { data: user, error: authErr } = await supabase.auth.getUser(token);
-  if (authErr || !user?.user) return res.status(401).json({ error: 'Invalid token' });
+  if (!authHeader?.startsWith('Bearer ')) return res.status(401).json({ error: 'Unauthorized' });
   const current = readSettings();
   const updated = { ...current, ...req.body };
   writeSettings(updated);
