@@ -880,20 +880,13 @@ export default function AdminDashboard() {
                                   const file = e.target.files?.[0]
                                   if (!file) return
                                   try {
-                                    const res = await axios.post('/api/upload', file, { 
-                                      headers: { 
-                                        'Content-Type': file.type,
-                                        'x-filename': file.name 
-                                      }, 
-                                      timeout: 60000 
-                                    })
-                                    if (res.data.url) {
-                                      updateProject(project.id, 'image', res.data.url)
-                                      showMessage('Cover image uploaded to Vercel Blob')
-                                    }
+                                    const folder = project.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'uploads'
+                                    const url = await uploadProjectImage(file, folder)
+                                    updateProject(project.id, 'image', url)
+                                    showMessage('Cover image uploaded successfully')
                                   } catch (err) {
                                     console.error('Upload error:', err)
-                                    showMessage('Upload failed. Check Vercel Blob configuration.', 'error')
+                                    showMessage('Upload failed. Please try again.', 'error')
                                   }
                                   e.target.value = ''
                                 }}
@@ -942,17 +935,12 @@ export default function AdminDashboard() {
                                 onChange={async (e) => {
                                   const files = e.target.files
                                   if (!files || files.length === 0) return
+                                  const folder = project.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'uploads'
                                   const uploadedUrls: string[] = []
                                   for (const file of Array.from(files)) {
                                     try {
-                                      const res = await axios.post('/api/upload', file, { 
-                                        headers: { 
-                                          'Content-Type': file.type,
-                                          'x-filename': file.name 
-                                        }, 
-                                        timeout: 60000 
-                                      })
-                                      if (res.data.url) uploadedUrls.push(res.data.url)
+                                      const url = await uploadProjectImage(file, folder)
+                                      uploadedUrls.push(url)
                                     } catch (err) { 
                                       console.error('Gallery item upload failed:', err) 
                                     }
@@ -960,9 +948,9 @@ export default function AdminDashboard() {
                                   if (uploadedUrls.length > 0) {
                                     const currentImages = project.images || []
                                     updateProject(project.id, 'images', [...currentImages, ...uploadedUrls])
-                                    showMessage(`${uploadedUrls.length} image(s) uploaded successfully to Vercel Blob`)
+                                    showMessage(`${uploadedUrls.length} image(s) uploaded successfully`)
                                   } else {
-                                    showMessage('Upload failed. Check Vercel Blob configuration.', 'error')
+                                    showMessage('Upload failed. Please try again.', 'error')
                                   }
                                   e.target.value = ''
                                 }}
@@ -1203,20 +1191,13 @@ export default function AdminDashboard() {
                           const file = e.target.files?.[0]
                           if (!file) return
                           try {
-                            const res = await axios.post('/api/upload', file, { 
-                              headers: { 
-                                'Content-Type': file.type,
-                                'x-filename': file.name 
-                              }, 
-                              timeout: 60000 
-                            })
-                            if (res.data.url) {
-                              setNewProjectData(prev => ({ ...prev, image: res.data.url }))
-                              showMessage('Cover image uploaded to Vercel Blob')
-                            }
+                            const folder = newProjectFolder || newProjectNewFolder || 'images'
+                            const url = await uploadProjectImage(file, folder)
+                            setNewProjectData(prev => ({ ...prev, image: url }))
+                            showMessage('Cover image uploaded successfully')
                           } catch (err) {
                             console.error('Upload error:', err)
-                            showMessage('Upload failed. Check Vercel Blob configuration.', 'error')
+                            showMessage('Upload failed. Please try again.', 'error')
                           }
                           e.target.value = ''
                         }}
@@ -1265,26 +1246,21 @@ export default function AdminDashboard() {
                         onChange={async (e) => {
                           const files = e.target.files
                           if (!files || files.length === 0) return
+                          const folder = newProjectFolder || newProjectNewFolder || 'images'
                           const uploadedUrls: string[] = []
                           for (const file of Array.from(files)) {
                             try {
-                              const res = await axios.post('/api/upload', file, { 
-                                headers: { 
-                                  'Content-Type': file.type,
-                                  'x-filename': file.name 
-                                }, 
-                                timeout: 60000 
-                              })
-                              if (res.data.url) uploadedUrls.push(res.data.url)
+                              const url = await uploadProjectImage(file, folder)
+                              uploadedUrls.push(url)
                             } catch (err) { 
                               console.error('Gallery item upload failed:', err) 
                             }
                           }
                           if (uploadedUrls.length > 0) {
                             setNewProjectData(prev => ({ ...prev, images: [...(prev.images || []), ...uploadedUrls] }))
-                            showMessage(`${uploadedUrls.length} image(s) uploaded successfully to Vercel Blob`)
+                            showMessage(`${uploadedUrls.length} image(s) uploaded successfully`)
                           } else {
-                            showMessage('Upload failed. Check Vercel Blob configuration.', 'error')
+                            showMessage('Upload failed. Please try again.', 'error')
                           }
                           e.target.value = ''
                         }}
