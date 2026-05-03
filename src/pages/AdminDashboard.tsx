@@ -59,6 +59,10 @@ export default function AdminDashboard() {
   const [newFolderName, setNewFolderName] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Site settings state
+  const [chatbotVisible, setChatbotVisible] = useState<boolean>(true)
+  const [settingsLoading, setSettingsLoading] = useState(false)
+
   // Mobile sidebar state
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -140,8 +144,35 @@ export default function AdminDashboard() {
     if (isAuthenticated) {
       fetchProjects()
       fetchFolders()
+      fetch('/api/settings')
+        .then(r => r.json())
+        .then(d => setChatbotVisible(d.chatbot_visible !== false))
+        .catch(() => {})
     }
   }, [isAuthenticated, fetchProjects, fetchFolders])
+
+  const toggleChatbot = async (value: boolean) => {
+    if (!session) return
+    setSettingsLoading(true)
+    try {
+      const token = session.access_token
+      const res = await fetch('/api/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ chatbot_visible: value }),
+      })
+      if (res.ok) {
+        setChatbotVisible(value)
+        showMessage(`Support bot ${value ? 'shown' : 'hidden'} on public site.`)
+      } else {
+        showMessage('Failed to update setting.', 'error')
+      }
+    } catch {
+      showMessage('Failed to update setting.', 'error')
+    } finally {
+      setSettingsLoading(false)
+    }
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -551,6 +582,34 @@ export default function AdminDashboard() {
                 description={apiConnected ? 'Supabase is live' : 'Using static fallback'}
                 accent={apiConnected ? 'emerald' : 'rose'}
               />
+            </div>
+
+            {/* Site Controls */}
+            <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Settings size={16} className="text-slate-400" />
+                <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Site Controls</h3>
+              </div>
+              <div className="flex items-center justify-between gap-4 py-3 px-4 bg-white/[0.02] rounded-xl border border-white/[0.05]">
+                <div>
+                  <p className="text-sm font-medium text-white">Support Bot</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Show or hide the AI chat widget on the public site</p>
+                </div>
+                <button
+                  onClick={() => toggleChatbot(!chatbotVisible)}
+                  disabled={settingsLoading}
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${
+                    chatbotVisible ? 'bg-cyan-500' : 'bg-zinc-700'
+                  }`}
+                  title={chatbotVisible ? 'Click to hide chat bot' : 'Click to show chat bot'}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                      chatbotVisible ? 'translate-x-5' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
 
             {/* Quick Actions */}

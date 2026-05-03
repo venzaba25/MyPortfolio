@@ -113,6 +113,7 @@ const getResponse = (question: string): string => {
 };
 
 export default function ChatBot() {
+  const [visible, setVisible] = useState<boolean | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -125,6 +126,13 @@ export default function ChatBot() {
   ]);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(r => r.json())
+      .then(d => setVisible(d.chatbot_visible !== false))
+      .catch(() => setVisible(true));
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -184,6 +192,8 @@ export default function ChatBot() {
       setMessages((prev) => [...prev, botResponse]);
     }, 800);
   };
+
+  if (visible === false) return null;
 
   return (
     <>

@@ -4,6 +4,21 @@ import bodyParser from 'body-parser';
 import { createClient } from '@supabase/supabase-js';
 import nodemailer from 'nodemailer';
 import multer from 'multer';
+import { readFileSync, writeFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const SETTINGS_PATH = join(__dirname, 'settings.json');
+
+function readSettings() {
+  try { return JSON.parse(readFileSync(SETTINGS_PATH, 'utf8')); }
+  catch { return { chatbot_visible: true }; }
+}
+function writeSettings(data) {
+  writeFileSync(SETTINGS_PATH, JSON.stringify(data, null, 2));
+}
 
 const app = express();
 const PORT = process.env.PORT || 5174;
@@ -37,6 +52,24 @@ function getTransporter() {
 
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, supabase: !!supabase });
+});
+
+// --- Site Settings ---
+app.get('/api/settings', (_req, res) => {
+  res.json(readSettings());
+});
+
+app.patch('/api/settings', async (req, res) => {
+  if (!supabase) return res.status(503).json({ error: 'Database not configured.' });
+  const authHeader = req.headers['authorization'];
+  const token = authHeader?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+  const { data: user, error: authErr } = await supabase.auth.getUser(token);
+  if (authErr || !user?.user) return res.status(401).json({ error: 'Invalid token' });
+  const current = readSettings();
+  const updated = { ...current, ...req.body };
+  writeSettings(updated);
+  res.json(updated);
 });
 
 app.post('/api/contact', async (req, res) => {
