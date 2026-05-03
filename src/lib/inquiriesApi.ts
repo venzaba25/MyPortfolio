@@ -176,3 +176,19 @@ export async function deleteInquiry(id: string): Promise<void> {
     await handle(res);
   }
 }
+
+/**
+ * Send a reply email to an inquiry via the Express bridge (requires SMTP).
+ * Also marks the inquiry as read server-side.
+ */
+export async function sendReply(
+  id: string,
+  payload: { toEmail: string; toName: string; subject: string; body: string }
+): Promise<void> {
+  const res = await fetch(`/api/inquiries/${id}/reply`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...(await authHeaders()) },
+    body: JSON.stringify(payload),
+  });
+  await handle(res);
+}

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Mail, Trash2, RefreshCw, ArrowLeft, Loader2, Inbox, Search,
   CheckCircle2, Circle, Reply, Calendar, ShieldCheck, LogOut,
+  Send, X, ChevronDown,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { Session } from "@supabase/supabase-js";
@@ -13,8 +14,19 @@ import {
   fetchInquiries,
   markInquiryRead,
   deleteInquiry,
+  sendReply,
   type Inquiry,
 } from "@/lib/inquiriesApi";
+
+function defaultReplyBody(firstName: string, originalSubject: string, originalMessage: string) {
+  return `Hi ${firstName},\n\nThank you for reaching out regarding "${originalSubject}".\n\n\n\nBest regards,\nVenz Aba\nFreelance Web, Software & AI Developer\n📧 venzaba25@gmail.com\n💼 linkedin.com/in/venz-aba`;
+}
+
+interface ReplyModal {
+  inquiry: Inquiry;
+  subject: string;
+  body: string;
+}
 
 export default function AdminInquiries() {
   const navigate = useNavigate();
@@ -27,6 +39,13 @@ export default function AdminInquiries() {
   const [filter, setFilter] = useState<"all" | "unread" | "read">("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [message, setMessage] = useState({ text: "", type: "" as "success" | "error" | "" });
+
+  // Reply modal state
+  const [replyModal, setReplyModal] = useState<ReplyModal | null>(null);
+  const [replySending, setReplySending] = useState(false);
+  const [replyError, setReplyError] = useState("");
+  const [showQuote, setShowQuote] = useState(false);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
 
   const showMessage = (text: string, type: "success" | "error" = "success") => {
     setMessage({ text, type });
@@ -94,6 +113,62 @@ export default function AdminInquiries() {
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       showMessage(`Delete failed: ${msg}`, "error");
+    }
+  };
+
+  const openReply = (inquiry: Inquiry) => {
+    setReplyError("");
+    setShowQuote(false);
+    setReplyModal({
+      inquiry,
+      subject: `Re: ${inquiry.subject}`,
+      body: defaultReplyBody(inquiry.firstName, inquiry.subject, inquiry.message),
+    });
+    setTimeout(() => {
+      if (bodyRef.current) {
+        // Place cursor at the blank line between greeting and sign-off
+        const pos = bodyRef.current.value.indexOf("\n\n\n");
+        if (pos !== -1) {
+          bodyRef.current.selectionStart = pos + 2;
+          bodyRef.current.selectionEnd = pos + 2;
+          bodyRef.current.focus();
+        }
+      }
+    }, 80);
+  };
+
+  const closeReply = () => {
+    if (replySending) return;
+    setReplyModal(null);
+    setReplyError("");
+    setShowQuote(false);
+  };
+
+  const handleSendReply = async () => {
+    if (!replyModal || !session) return;
+    const { inquiry, subject, body } = replyModal;
+    if (!subject.trim() || !body.trim()) {
+      setReplyError("Subject and message are required.");
+      return;
+    }
+    setReplyError("");
+    setReplySending(true);
+    try {
+      await sendReply(inquiry.id, {
+        toEmail: inquiry.email,
+        toName: `${inquiry.firstName} ${inquiry.lastName}`.trim(),
+        subject: subject.trim(),
+        body: body.trim(),
+      });
+      // Mark as read locally
+      setInquiries(prev => prev.map(i => i.id === inquiry.id ? { ...i, isRead: true } : i));
+      closeReply();
+      showMessage(`Reply sent to ${inquiry.email}`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setReplyError(msg);
+    } finally {
+      setReplySending(false);
     }
   };
 
@@ -206,8 +281,8 @@ export default function AdminInquiries() {
             <p className="font-semibold mb-1">Could not load inquiries from Supabase.</p>
             <p className="text-xs text-red-300/80 break-all">{loadError}</p>
             <p className="text-xs text-red-300/80 mt-2">
-              Make sure you've run the latest <code className="font-mono bg-red-500/20 px-1 rounded">supabase/schema.sql</code>{" "}
-              in your Supabase SQL editor — it adds the <code className="font-mono bg-red-500/20 px-1 rounded">inquiries</code> table.
+              Make sure you've run the latest schema SQL in your Supabase SQL editor — it adds the{" "}
+              <code className="font-mono bg-red-500/20 px-1 rounded">inquiries</code> table.
             </p>
           </div>
         )}
@@ -255,6 +330,7 @@ export default function AdminInquiries() {
           </div>
         ) : (
           <div className="grid lg:grid-cols-5 gap-6">
+            {/* List panel */}
             <div className="lg:col-span-2 space-y-3 max-h-[70vh] overflow-y-auto pr-2">
               {filtered.map(inq => (
                 <motion.button
@@ -286,6 +362,7 @@ export default function AdminInquiries() {
               ))}
             </div>
 
+            {/* Detail panel */}
             <div className="lg:col-span-3">
               {selected ? (
                 <motion.div
@@ -300,10 +377,7 @@ export default function AdminInquiries() {
                       <p className="text-sm text-neutral-400 mt-1">
                         From <span className="text-white font-medium">{selected.firstName} {selected.lastName}</span>{" "}
                         &middot;{" "}
-                        <a
-                          href={`mailto:${selected.email}`}
-                          className="text-blue-400 hover:underline"
-                        >
+                        <a href={`mailto:${selected.email}`} className="text-blue-400 hover:underline">
                           {selected.email}
                         </a>
                       </p>
@@ -337,17 +411,19 @@ export default function AdminInquiries() {
                   </div>
 
                   <div className="mt-5 flex flex-wrap gap-3">
+                    {/* Primary: in-app reply composer */}
+                    <button
+                      onClick={() => openReply(selected)}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-all shadow-lg shadow-blue-600/25"
+                    >
+                      <Reply size={14} /> Reply
+                    </button>
+                    {/* Fallback: mailto */}
                     <a
                       href={`mailto:${selected.email}?subject=Re:%20${encodeURIComponent(selected.subject)}`}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-all"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-sm transition-all border border-neutral-700"
                     >
-                      <Reply size={14} /> Reply by email
-                    </a>
-                    <a
-                      href={`mailto:${selected.email}`}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-sm transition-all border border-neutral-700"
-                    >
-                      <Mail size={14} /> {selected.email}
+                      <Mail size={14} /> Open in mail client
                     </a>
                   </div>
                 </motion.div>
@@ -361,6 +437,142 @@ export default function AdminInquiries() {
           </div>
         )}
       </div>
+
+      {/* ── Reply Modal ── */}
+      <AnimatePresence>
+        {replyModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+            onClick={(e) => { if (e.target === e.currentTarget) closeReply(); }}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 40, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 40, scale: 0.97 }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="w-full max-w-2xl bg-[#0d1424] border border-white/[0.09] rounded-3xl shadow-2xl overflow-hidden"
+            >
+              {/* Modal header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center">
+                    <Reply size={15} className="text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-white">Compose Reply</p>
+                    <p className="text-xs text-neutral-500">
+                      To: <span className="text-blue-400">{replyModal.inquiry.email}</span>
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={closeReply}
+                  disabled={replySending}
+                  className="w-8 h-8 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] flex items-center justify-center text-neutral-400 hover:text-white transition-all"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              {/* Subject */}
+              <div className="px-6 pt-4">
+                <label className="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider block mb-1.5">
+                  Subject
+                </label>
+                <input
+                  type="text"
+                  value={replyModal.subject}
+                  onChange={(e) => setReplyModal(prev => prev ? { ...prev, subject: e.target.value } : null)}
+                  disabled={replySending}
+                  className="w-full px-4 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-white text-sm outline-none focus:border-blue-500/60 transition-all disabled:opacity-50"
+                />
+              </div>
+
+              {/* Body */}
+              <div className="px-6 pt-4">
+                <label className="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider block mb-1.5">
+                  Message
+                </label>
+                <textarea
+                  ref={bodyRef}
+                  value={replyModal.body}
+                  onChange={(e) => setReplyModal(prev => prev ? { ...prev, body: e.target.value } : null)}
+                  disabled={replySending}
+                  rows={10}
+                  className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-neutral-200 leading-relaxed outline-none focus:border-blue-500/60 transition-all resize-none disabled:opacity-50 font-mono"
+                />
+              </div>
+
+              {/* Original message quote (collapsible) */}
+              <div className="px-6 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowQuote(v => !v)}
+                  className="flex items-center gap-1.5 text-xs text-neutral-600 hover:text-neutral-400 transition-colors"
+                >
+                  <ChevronDown size={13} className={`transition-transform ${showQuote ? "rotate-180" : ""}`} />
+                  {showQuote ? "Hide" : "Show"} original message
+                </button>
+                <AnimatePresence>
+                  {showQuote && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-2 p-4 rounded-xl border-l-2 border-blue-500/40 bg-white/[0.02] text-xs text-neutral-500 whitespace-pre-wrap leading-relaxed">
+                        <p className="text-neutral-600 mb-2 font-medium">
+                          On {new Date(replyModal.inquiry.createdAt).toLocaleString()},{" "}
+                          {replyModal.inquiry.firstName} {replyModal.inquiry.lastName} wrote:
+                        </p>
+                        {replyModal.inquiry.message}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Error */}
+              {replyError && (
+                <div className="mx-6 mt-3 px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
+                  {replyError}
+                </div>
+              )}
+
+              {/* Footer */}
+              <div className="flex items-center justify-between gap-3 px-6 py-4 mt-3 border-t border-white/[0.07]">
+                <p className="text-xs text-neutral-600">
+                  Sent from <span className="text-neutral-500">{session?.user?.email}</span> via SMTP
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={closeReply}
+                    disabled={replySending}
+                    className="px-4 py-2 rounded-xl text-sm text-neutral-400 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] transition-all disabled:opacity-40"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSendReply}
+                    disabled={replySending || !replyModal.subject.trim() || !replyModal.body.trim()}
+                    className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-600/20"
+                  >
+                    {replySending ? (
+                      <><Loader2 size={14} className="animate-spin" /> Sending…</>
+                    ) : (
+                      <><Send size={14} /> Send Reply</>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
