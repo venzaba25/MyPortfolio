@@ -2,6 +2,7 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminInquiries from './pages/AdminInquiries'
+import AdminSettings from './pages/AdminSettings'
 import SplashCursor from './components/ui/SplashCursor'
 import AdminInquiriesBadge from './components/AdminInquiriesBadge'
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/inquiries" element={<AdminInquiries />} />
+        <Route path="/admin/settings" element={<AdminSettings />} />
       </Routes>
       {isAdmin && <AdminInquiriesBadge />}
     </>

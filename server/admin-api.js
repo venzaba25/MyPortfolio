@@ -21,7 +21,7 @@ function writeSettings(data) {
 }
 
 const app = express();
-const PORT = process.env.API_PORT || process.env.PORT || 3000;
+const PORT = process.env.API_PORT || 3000;
 
 const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -35,6 +35,8 @@ const supabase = supabaseUrl && supabaseServiceKey
   : null;
 
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
