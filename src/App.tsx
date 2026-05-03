@@ -17,7 +17,7 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/inquiries" element={<AdminInquiries />} />
       </Routes>
-      <AdminInquiriesBadge />
+      {isAdmin && <AdminInquiriesBadge />}
     </>
   )
 }
