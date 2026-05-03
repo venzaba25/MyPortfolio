@@ -44,19 +44,30 @@ export default function AdminSettings() {
 
   useEffect(() => {
     if (!session) return
-    fetch('/api/settings')
-      .then(async r => {
+
+    const loadSettings = async (attempt = 1) => {
+      try {
+        const r = await fetch('/api/settings')
+        const ct = r.headers.get('content-type') ?? ''
+        if (!ct.includes('application/json')) {
+          // Vite served HTML fallback — API server not ready yet, retry once
+          if (attempt < 3) {
+            await new Promise(res => setTimeout(res, 1000 * attempt))
+            return loadSettings(attempt + 1)
+          }
+          throw new Error('API server not reachable (received HTML instead of JSON)')
+        }
         if (!r.ok) throw new Error(`Server returned ${r.status}`)
-        return r.json()
-      })
-      .then(d => {
+        const d = await r.json()
         setChatbotVisible(d.chatbot_visible !== false)
         setSettingsError('')
-      })
-      .catch((err: unknown) => {
+      } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : String(err)
-        setSettingsError(`Could not load settings from API server. (${msg})`)
-      })
+        setSettingsError(`Could not load settings. (${msg})`)
+      }
+    }
+
+    loadSettings()
     checkDb()
   }, [session])
 
