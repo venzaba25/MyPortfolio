@@ -338,3 +338,11 @@ app.delete('/api/inquiries/:id', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`[admin-api] Listening on port ${PORT}`);
 });
+
+process.on('uncaughtException', (err) => {
+  console.error('[admin-api] Uncaught exception (keeping alive):', err.message);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('[admin-api] Unhandled rejection (keeping alive):', reason);
+});

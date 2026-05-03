@@ -23,6 +23,15 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on('error', (err, _req, res) => {
+            console.warn('[vite proxy] API unreachable:', err.message);
+            if ('writeHead' in res && typeof res.writeHead === 'function') {
+              res.writeHead(503, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: 'API server unavailable. Please try again.' }));
+            }
+          });
+        },
       },
     },
   },
