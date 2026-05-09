@@ -54,3 +54,4 @@ SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdX
 SUPABASE_URL = "https://gjzybjtmnwcidpvfwrbc.supabase.co"
 VITE_SUPABASE_URL = "https://gjzybjtmnwcidpvfwrbc.supabase.co"
 GMAIL_USER = "venzaba25@gmail.com"
+API_PORT = "3000"
