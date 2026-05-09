@@ -31,11 +31,11 @@ const ContactModal = ({ isOpen, onClose, number }: ContactModalProps) => {
       description: "Chat with me on WhatsApp"
     },
     {
-      name: "Messenger",
+      name: "Facebook",
       icon: <MessageCircle className="w-6 h-6" />,
       color: "bg-[#0084FF]",
-      link: "https://m.me/venzaba25",
-      description: "Chat with me on Messenger"
+      link: "https://facebook.com/venzaba25",
+      description: "Message me on Facebook"
     },
     {
       name: "Viber",

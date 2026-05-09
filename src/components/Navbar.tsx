@@ -58,7 +58,7 @@ export default function Navbar() {
           <NavbarLogo />
           <NavItems items={navItems} activeSection={activeSection} />
           <div className="flex items-center gap-4">
-            <NavbarButton variant="secondary">Resume</NavbarButton>
+            <NavbarButton href="https://raw.githubusercontent.com/venzaba25/venzaba25/main/files/myvc.pdf" variant="secondary">Resume</NavbarButton>
             <NavbarButton href="#contact" variant="primary">Let's Talk</NavbarButton>
           </div>
         </NavBody>
@@ -96,6 +96,7 @@ export default function Navbar() {
             })}
             <div className="flex w-full flex-col gap-4">
               <NavbarButton
+                href="https://raw.githubusercontent.com/venzaba25/venzaba25/main/files/myvc.pdf"
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
                 className="w-full"

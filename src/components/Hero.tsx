@@ -128,8 +128,13 @@ export default function Hero({
               <a href="#projects" className="px-7 py-3 bg-white/5 hover:bg-white/10 text-white font-semibold rounded-xl border border-white/15 backdrop-blur-sm hover:border-white/30 transition-all duration-200 text-center">
                 View My Work
               </a>
-              <a href="#contact" className="py-3 text-neutral-400 text-sm font-medium hover:text-white transition-all duration-200 text-center underline-offset-4 hover:underline">
-                Or just say hi →
+              <a
+                href="https://raw.githubusercontent.com/venzaba25/venzaba25/main/files/myvc.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-7 py-3 bg-white/5 hover:bg-white/10 text-white font-semibold rounded-xl border border-white/15 backdrop-blur-sm hover:border-white/30 transition-all duration-200 text-center"
+              >
+                Download CV
               </a>
             </div>
           </ScrollReveal>
