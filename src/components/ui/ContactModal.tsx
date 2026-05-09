@@ -41,7 +41,7 @@ const ContactModal = ({ isOpen, onClose, number }: ContactModalProps) => {
       name: "Viber",
       icon: <Send className="w-6 h-6" />,
       color: "bg-[#7c5295]", // Viber purple
-      link: `viber://chat?number=639512467291`, // Removed %2B as it's often more compatible
+      link: `https://viber.me/+639512467291`,
       description: "Message me on Viber"
     }
   ]
@@ -89,6 +89,8 @@ const ContactModal = ({ isOpen, onClose, number }: ContactModalProps) => {
                   <a
                     key={contact.name}
                     href={contact.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center p-4 rounded-2xl bg-neutral-800/50 border border-neutral-700/50 hover:border-neutral-500 hover:bg-neutral-800 transition-all group no-underline"
                   >
                     <div className={`${contact.color} p-3 rounded-xl text-white shadow-lg shadow-black/20 mr-4 group-hover:scale-110 transition-transform`}>
