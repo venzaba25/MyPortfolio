@@ -423,8 +423,13 @@ app.delete('/api/inquiries/:id', async (req, res) => {
   res.json({ ok: true });
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`[admin-api] Listening on port ${PORT}`);
+});
+
+server.on('error', (err) => {
+  console.error('[admin-api] Server error:', err.message);
+  process.exit(1);
 });
 
 process.on('uncaughtException', (err) => {
