@@ -7,6 +7,19 @@ const supabase = supabaseUrl && supabaseServiceKey
   ? createClient(supabaseUrl, supabaseServiceKey)
   : null;
 
+function validateJWT(token) {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf8'));
+    const now = Math.floor(Date.now() / 1000);
+    if (!payload.sub || payload.exp < now) return null;
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
 function getTransporter() {
   const user = process.env.GMAIL_USER;
   const pass = process.env.GMAIL_APP_PASSWORD;
@@ -26,8 +39,8 @@ export default async function handler(req, res) {
   const token = req.headers['authorization']?.replace('Bearer ', '');
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
-  const { data: user, error: authErr } = await supabase.auth.getUser(token);
-  if (authErr || !user?.user) return res.status(401).json({ error: 'Invalid token' });
+  const payload = validateJWT(token);
+  if (!payload) return res.status(401).json({ error: 'Invalid or expired token' });
 
   const { id } = req.query;
   const { subject, body, toEmail, toName } = req.body || {};
