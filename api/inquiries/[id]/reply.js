@@ -82,7 +82,7 @@ export default async function handler(req, res) {
         </td></tr>
         <tr><td style="padding:20px 32px;text-align:center;">
           <a href="mailto:${ownerEmail}" style="display:inline-block;margin:0 8px;color:#4f46e5;font-size:13px;text-decoration:none;font-weight:500;">📧 ${ownerEmail}</a>
-          <a href="https://linkedin.com/in/venz-aba" style="display:inline-block;margin:0 8px;color:#4f46e5;font-size:13px;text-decoration:none;font-weight:500;">💼 LinkedIn</a>
+          <a href="https://facebook.com/venzaba25" style="display:inline-block;margin:0 8px;color:#4f46e5;font-size:13px;text-decoration:none;font-weight:500;">💼 Facebook</a>
         </td></tr>
         <tr><td style="background:#f8fafc;padding:16px 32px;border-top:1px solid #e2e8f0;">
           <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center;">Reply from Venz Aba's portfolio admin.</p>

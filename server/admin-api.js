@@ -189,7 +189,7 @@ app.post('/api/contact', async (req, res) => {
         from: `"Venz Aba" <${ownerEmail}>`,
         to: email,
         subject: `Thanks for reaching out, ${firstname}! I'll be in touch soon.`,
-        text: `Hi ${firstname},\n\nThank you for getting in touch! I've received your message and I'm excited to hear more about what you have in mind.\n\nI typically reply within 24 hours. In the meantime, feel free to check out my work at my portfolio or connect with me on LinkedIn.\n\nHere's a quick summary of what you sent:\n- Subject: ${subject || '(no subject)'}\n- Message: ${message}\n\nTalk soon!\n\nBest regards,\nVenz Aba\nFreelance Web, Software & AI Developer\n📧 venzaba25@gmail.com\n💼 linkedin.com/in/venz-aba`,
+        text: `Hi ${firstname},\n\nThank you for getting in touch! I've received your message and I'm excited to hear more about what you have in mind.\n\nI typically reply within 24 hours. In the meantime, feel free to check out my work at my portfolio or connect with me on Facebook.\n\nHere's a quick summary of what you sent:\n- Subject: ${subject || '(no subject)'}\n- Message: ${message}\n\nTalk soon!\n\nBest regards,\nVenz Aba\nFreelance Web, Software & AI Developer\n📧 venzaba25@gmail.com\n💼 facebook.com/venzaba25`,
         html: `
 <!DOCTYPE html>
 <html>
@@ -236,7 +236,7 @@ app.post('/api/contact', async (req, res) => {
             <p style="margin:0 0 12px;font-size:13px;color:#94a3b8;">Connect with me</p>
             <a href="mailto:venzaba25@gmail.com" style="display:inline-block;margin:0 6px;color:#4f46e5;font-size:13px;text-decoration:none;font-weight:500;">📧 Email</a>
             <a href="https://wa.me/639512467291" style="display:inline-block;margin:0 6px;color:#4f46e5;font-size:13px;text-decoration:none;font-weight:500;">💬 WhatsApp</a>
-            <a href="https://linkedin.com/in/venz-aba" style="display:inline-block;margin:0 6px;color:#4f46e5;font-size:13px;text-decoration:none;font-weight:500;">💼 LinkedIn</a>
+            <a href="https://facebook.com/venzaba25" style="display:inline-block;margin:0 6px;color:#4f46e5;font-size:13px;text-decoration:none;font-weight:500;">💼 Facebook</a>
           </td>
         </tr>
         <!-- Footer -->
@@ -359,7 +359,7 @@ app.post('/api/inquiries/:id/reply', async (req, res) => {
         <tr>
           <td style="padding:20px 32px;text-align:center;">
             <a href="mailto:${ownerEmail}" style="display:inline-block;margin:0 8px;color:#4f46e5;font-size:13px;text-decoration:none;font-weight:500;">📧 ${ownerEmail}</a>
-            <a href="https://linkedin.com/in/venz-aba" style="display:inline-block;margin:0 8px;color:#4f46e5;font-size:13px;text-decoration:none;font-weight:500;">💼 LinkedIn</a>
+            <a href="https://facebook.com/venzaba25" style="display:inline-block;margin:0 8px;color:#4f46e5;font-size:13px;text-decoration:none;font-weight:500;">💼 Facebook</a>
           </td>
         </tr>
         <tr>
