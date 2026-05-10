@@ -48,7 +48,6 @@ export default function Contact() {
         subject,
         message,
       });
-      console.log('Inquiry submitted:', result);
       setSubmitStatus('success');
       form.reset();
       setTimeout(() => setSubmitStatus('idle'), 6000);

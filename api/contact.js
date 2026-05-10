@@ -31,16 +31,10 @@ export default async function handler(req, res) {
 
   let inquiryId = null;
   let savedToDb = false;
-  let dbError = null;
   let ownerEmailSent = false;
   let autoReplySent = false;
 
-  if (!supabase) {
-    const hasUrl = !!(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL);
-    const hasKey = !!process.env.SUPABASE_SERVICE_ROLE_KEY;
-    dbError = `Supabase not configured. SUPABASE_URL=${hasUrl}, SERVICE_ROLE_KEY=${hasKey}`;
-    console.error('[contact]', dbError);
-  } else {
+  if (supabase) {
     try {
       const { data, error } = await supabase
         .from('inquiries')
@@ -56,14 +50,12 @@ export default async function handler(req, res) {
         .single();
 
       if (error) {
-        dbError = error.message;
         console.error('[contact] DB insert error:', error.message);
       } else {
         inquiryId = data?.id ?? null;
         savedToDb = true;
       }
     } catch (err) {
-      dbError = String(err);
       console.error('[contact] DB exception:', err);
     }
   }
@@ -147,5 +139,5 @@ export default async function handler(req, res) {
     }
   }
 
-  res.json({ inquiryId, savedToDb, dbError, ownerEmailSent, autoReplySent });
+  res.json({ inquiryId, savedToDb, ownerEmailSent, autoReplySent });
 }
