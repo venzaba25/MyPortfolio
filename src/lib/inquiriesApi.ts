@@ -82,54 +82,47 @@ export async function createInquiry(input: NewInquiry): Promise<{ inquiryId: str
 }
 
 /**
- * Fetch inquiries — tries direct Supabase client first (fastest path),
- * falls back to the Express bridge server if that fails (e.g. RLS mismatch).
+ * Fetch inquiries — uses the API bridge (service role key, bypasses RLS) as
+ * the primary path so results are always correct regardless of RLS policies.
+ * Falls back to a direct Supabase query if the bridge is unavailable.
  */
 export async function fetchInquiries(): Promise<Inquiry[]> {
-  // Primary: direct Supabase query using the authenticated session
+  // Primary: API bridge — uses service role key, always bypasses RLS
   try {
+    const res = await fetch("/api/inquiries", { headers: await authHeaders() });
+    const body = await handle<{ inquiries: InquiryRow[] }>(res);
+    return body.inquiries.map(fromRow);
+  } catch {
+    // Fallback: direct Supabase query (requires RLS SELECT policy for authenticated)
     const { data, error } = await supabase
       .from("inquiries")
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (!error && data) {
-      return (data as InquiryRow[]).map(fromRow);
-    }
-    // If there's a specific error about missing table or permissions, throw it
     if (error) throw new Error(error.message);
-  } catch (primaryErr) {
-    // Fall back to Express bridge
-    try {
-      const res = await fetch("/api/inquiries", { headers: await authHeaders() });
-      const body = await handle<{ inquiries: InquiryRow[] }>(res);
-      return body.inquiries.map(fromRow);
-    } catch {
-      // Re-throw the original error so callers get a meaningful message
-      throw primaryErr;
-    }
+    return (data as InquiryRow[]).map(fromRow);
   }
-  return [];
 }
 
 /**
- * Fetch unread count — tries Supabase client first, falls back to Express.
+ * Fetch unread count — uses the API bridge as primary, falls back to direct Supabase.
  */
 export async function fetchUnreadCount(): Promise<number> {
+  // Primary: API bridge
   try {
-    const { count, error } = await supabase
-      .from("inquiries")
-      .select("*", { count: "exact", head: true })
-      .eq("is_read", false);
-
-    if (!error) return count ?? 0;
-    throw new Error(error.message);
+    const res = await fetch("/api/inquiries/unread-count", { headers: await authHeaders() });
+    const body = await handle<{ count: number }>(res);
+    return body.count;
   } catch {
-    // Fallback to Express
+    // Fallback: direct Supabase query
     try {
-      const res = await fetch("/api/inquiries/unread-count", { headers: await authHeaders() });
-      const body = await handle<{ count: number }>(res);
-      return body.count;
+      const { count, error } = await supabase
+        .from("inquiries")
+        .select("*", { count: "exact", head: true })
+        .eq("is_read", false);
+
+      if (!error) return count ?? 0;
+      return 0;
     } catch {
       return 0;
     }
